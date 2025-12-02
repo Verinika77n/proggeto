@@ -1,0 +1,45 @@
+
+
+<!doctype html>
+<html lang="ru">
+  <header class="topbar">
+  <nav>
+    <a href="{% url 'profiles_list' %}">Главная</a>
+    <span class="spacer"></span>
+    {% if user.is_authenticated %}
+      <span>Вы вошли как {{ user.username }}</span>
+      <a href="{% url 'profiles_list' %}">Выйти</a>
+      <a href="{% url 'profiles_list' %}">Мои записи</a>
+    {% else %}
+      <a href="{% url 'profiles_list' %}">Войти</a>
+      <a href="{% url 'profiles_list' %}">Регистрация</a>
+    {% endif %}
+
+  </nav>
+</header>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Гостевая книга{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="container">
+      {% block content %}{% endblock %}
+      {% if messages %}
+  <ul class="messages">
+    {% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}
+  </ul>
+{% endif %}
+    </main>
+    <div class="sidebar">
+    <ul>
+      <li><a href="#">Элемент 1</a></li>
+      <li><a href="#">Элемент 2</a></li>
+      <li><a href="#">Элемент 3</a></li>
+      <li><a href="#">Элемент 4</a></li>
+      <li><a href="#">Элемент 5</a></li>
+    </ul>
+  </div>
+  </body>
+</html>
