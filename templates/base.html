@@ -4,15 +4,20 @@
 <html lang="ru">
   <header class="topbar">
   <nav>
-    <a href="{% url 'profiles_list' %}">Главная</a>
+    <a href="{% url 'profiles' %}" >Главная</a>
     <span class="spacer"></span>
     {% if user.is_authenticated %}
       <span>Вы вошли как {{ user.username }}</span>
-      <a href="{% url 'profiles_list' %}">Выйти</a>
-      <a href="{% url 'profiles_list' %}">Мои записи</a>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-link nav-link" style="padding:0; border:none; background:none;">
+        Выйти
+    </button>
+    </form>
+      <a href="{% url 'profiles' %}">Мои записи</a>
     {% else %}
-      <a href="{% url 'profiles_list' %}">Войти</a>
-      <a href="{% url 'profiles_list' %}">Регистрация</a>
+      <a href="{% url 'login' %}">Войти</a>
+      <a href="{% url 'signup' %}">Регистрация</a>
     {% endif %}
 
   </nav>
@@ -26,7 +31,7 @@
   <body>
     <main class="container">
       {% block content %}{% endblock %}
-      {% if messages %}
+     {% if messages %}
   <ul class="messages">
     {% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}
   </ul>

@@ -7,7 +7,7 @@ from django.core.files.images import get_image_dimensions
 class DataUserForm(forms.ModelForm):
     class Meta:
         model = DataUser
-        fields = ['fname','lname','email','phone', 'birth_date', 'gender','about', 'photo',]
+        fields = ['fname','lname','phone', 'birth_date', 'gender','about', 'photo',]
         widgets = {
             'fname': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -17,20 +17,16 @@ class DataUserForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Введите фамилию'
             }),
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'example@domain.com'
-            }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '+7 (XXX) XXX-XX-XX'
             }),
-            'birth_date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
+           'birth_date': forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={'class': 'form-control', 'type': 'date'}
+            ),
             'gender': forms.RadioSelect(
-                choices=[('Male', 'Мужской'), ('Female', 'Женский'), ('Other', 'Другой')],
+                choices=[('Male', 'Мужской'), ('Female', 'Женский')],
                 attrs={
                     'class': 'form-select'
                 }
@@ -47,7 +43,6 @@ class DataUserForm(forms.ModelForm):
         labels = {
             'fname': 'Имя',
             'lname': 'Фамилия',
-            'email': 'Email',
             'phone': 'Телефон',
             'birth_date': 'Дата рождения',
             'gender': 'Пол',
