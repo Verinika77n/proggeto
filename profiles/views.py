@@ -9,8 +9,8 @@ from django.db.models import Q
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 class SearchMixin:
     def get_queryset(self):
@@ -35,16 +35,32 @@ class EntryDetailView(DetailView):
     template_name = 'profiles/entry_detail.html'
     context_object_name = 'entry'
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.contrib import messages
+from django.views.generic import CreateView
+from .models import DataUser
+from .forms import DataUserForm
+
 class EntryCreateView(LoginRequiredMixin, CreateView):
     model = DataUser
     form_class = DataUserForm
     template_name = 'profiles/entry_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if hasattr(request.user, 'profile'):
+            messages.info(request, 'У вас уже есть данные профиля.')
+            return redirect('my_prof')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.user = self.request.user
+        obj.save()
         return super().form_valid(form)
+
     def get_success_url(self):
-        from django.contrib import messages
         messages.success(self.request, 'Запись добавлена')
         return reverse('profiles-detail', args=[self.object.pk])
 
@@ -57,12 +73,15 @@ class OwnerOrStaffRequired(UserPassesTestMixin):
         messages.error(self.request, 'Недостаточно прав')
         return super().handle_no_permission()
 
-class EntryUpdateView(LoginRequiredMixin, OwnerOrStaffRequired, UpdateView):
+class EntryUpdateView(LoginRequiredMixin, UpdateView):
     model = DataUser
     form_class = DataUserForm
     template_name = 'profiles/entry_form.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
     def get_success_url(self):
-        from django.contrib import messages
         messages.success(self.request, 'Запись обновлена')
         return reverse('profiles-detail', args=[self.object.pk])
 
@@ -75,7 +94,18 @@ class EntryDeleteView(LoginRequiredMixin, OwnerOrStaffRequired, DeleteView):
         messages.success(self.request, 'Запись удалена')
         return super().delete(request, *args, **kwargs)
 
+class MyProfileView(LoginRequiredMixin, DetailView):
+    model = DataUser
+    template_name = 'profiles/my_prof.html'
+    context_object_name = 'entry'
 
+    def get_object(self, queryset=None):
+        # если профиль есть — возвращаем его
+        try:
+            return self.request.user.profile
+        except DataUser.DoesNotExist:
+            # если профиля нет — редиректим на создание
+            return redirect('profiles-create')
 
 #
 #

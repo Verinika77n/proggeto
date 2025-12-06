@@ -1,17 +1,71 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>{% if object %}Изменить{% else %}Создать{% endif %} запись</h1>
-  <form method="post" class="card" enctype="multipart/form-data">
+  <h1 class="mb-4">{% if object %}Изменить{% else %}Добавить{% endif %} данные</h1>
+
+  <form method="post" class="card p-4" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
-      <label>Имя</label>{{ form.fname }}{{ form.fname.errors }}
-        <label>Фамилия</label>{{ form.lname }}{{ form.lname.errors }}
-        <label>Телефон</label>{{ form.phone }}{{ form.phone.errors }}
-      <label>Дата рождения</label>{{ form.birth_date }}{{ form.birth_date.errors }}
-        <label>Пол</label>{{ form.gender }}{{ form.gender.errors }}
-      <label>О себе</label>{{ form.about }}{{ form.about.errors }}
-      <label>Изображение</label>{{ form.photo }}{{ form.photo.errors }}       
-    <button type="submit">Сохранить</button>
-    <a href="{% if object %}{% url 'profiles-detail' object.id %}{% else %}{% url 'profiles' %}{% endif %}">Отмена</a>
+
+    <div class="mb-3">
+      <label class="form-label">Имя</label>
+      {{ form.fname }}
+      {{ form.fname.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Фамилия</label>
+      {{ form.lname }}
+      {{ form.lname.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Телефон</label>
+      {{ form.phone }}
+      {{ form.phone.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Дата рождения</label>
+      {{ form.birth_date }}
+      {{ form.birth_date.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label d-block">Пол</label>
+      {% for radio in form.gender %}
+        <div class="form-check form-check-inline">
+          {{ radio.tag }}
+          <label class="form-check-label">{{ radio.choice_label }}</label>
+        </div>
+      {% endfor %}
+      {{ form.gender.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">О себе</label>
+      {{ form.about }}
+      {{ form.about.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Изображение</label>
+      {{ form.photo }}
+      {{ form.photo.errors }}
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary">Сохранить</button>
+     {% if object %}
+     {% if user.is_authenticated %}
+     {% if object.user == user or user.is_staff %}
+    <a href="/my_prof/" class="btn btn-secondary">Отмена</a>
+    {% else %}
+      <a href="{% if object %}{% url 'profiles-detail' object.id %}{% else %}{% url 'profiles' %}{% endif %}" class="btn btn-secondary">Отмена</a>
+  
+
+     {% endif %}
+     {% endif %}
+     {% endif %}
+      </div>
   </form>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import EntryListView, EntryDetailView, EntryCreateView, EntryUpdateView, EntryDeleteView
+from .views import EntryListView, EntryDetailView, EntryCreateView, EntryUpdateView, EntryDeleteView, MyProfileView
 
 from .views import signup
 
@@ -11,4 +11,5 @@ urlpatterns = [
     path('<int:pk>/edit/', EntryUpdateView.as_view(), name='profiles-edit'),
     path('<int:pk>/delete/', EntryDeleteView.as_view(), name='profiles-delete'),
     path('signup/', signup, name='signup'),
+    path('my_prof/', MyProfileView.as_view(), name='my_prof'),
 ]

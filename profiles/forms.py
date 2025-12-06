@@ -28,7 +28,7 @@ class DataUserForm(forms.ModelForm):
             'gender': forms.RadioSelect(
                 choices=[('Male', 'Мужской'), ('Female', 'Женский')],
                 attrs={
-                    'class': 'form-select'
+                    'class': 'form-check-input'
                 }
             ),
             'about': forms.Textarea(attrs={

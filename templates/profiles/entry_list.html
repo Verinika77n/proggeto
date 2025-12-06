@@ -1,27 +1,69 @@
 {% extends 'base.html' %}
 {% block content %}
   <h1>Профили</h1>
-  <form method="get" class="card" style="margin-bottom:12px">
-    <input type="text" name="q" value="{{ q }}" placeholder="Поиск по имени/сообщению">
-    <button type="submit">Искать</button>
+
+  <form method="get" class="card p-3 mb-3">
+    <div class="input-group">
+      <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Поиск по имени/сообщению">
+      <button type="submit" class="btn btn-primary">Искать</button>
+    </div>
   </form>
-  {% if user.is_authenticated %}<p><a href="{% url 'profiles-create' %}">Добавить запись</a></p>{% endif %}
-  <ul class="items">
+  <div class="row">
     {% for e in page_obj %}
-      <li>
-        <b><a href="{% url 'profiles-detail' e.id %}">{{ e.fname }}</a></b>
-        · <small>{{ e.created_at|date:'d.m.Y H:i' }}</small>
-        {% if e.user %} · никнем: {{ e.user.username }}{% endif %}<br>
-        {% if e.photo %}<img src="{{ e.photo.url }}" style="max-width:220px;height:auto"><br>{% endif %}
-        {{ e.lname }}
-      </li>
-    {% empty %}<li>Пока нет записей</li>{% endfor %}
-  </ul>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center">
+          {% if e.photo %}
+      <img src="{{ e.photo.url }}" 
+           class="rounded-circle mx-auto d-block mt-3" 
+           alt="{{ e.fname }} {{ e.lname }}" 
+           style="width:150px; height:150px; object-fit:cover;">
+    {% endif %}
+          <div class="card-body">
+             <h5 class="card-title">
+              {% if e.user == user or user.is_staff %}
+        <a href="/my_prof/">
+          {% else %}
+        <a href="{% url 'profiles-detail' e.id %}">
+          {% endif %}
+          {{ e.fname }} {{ e.lname }}
+        </a>
+      </h5>
+       {% if e.about %}
+        <p class="card-text">{{ e.about }}</p>
+      {% endif %}
+
+            <p class="card-text">
+
+              {% if e.user %}<small class="text-muted">ник: {{ e.user.username }}</small>{% endif %}
+            </p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Регистрация: {{ e.created_at|date:'d.m.Y' }}</small>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>Пока нет записей</p>
+    {% endfor %}
+  </div>
+
   {% if page_obj.paginator.num_pages > 1 %}
-    <nav class="pagination">
-      {% if page_obj.has_previous %}<a href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>{% endif %}
-      <span>Стр. {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
-      {% if page_obj.has_next %}<a href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>{% endif %}
+    <nav class="d-flex justify-content-center mt-4">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+          </li>
+        {% endif %}
+        <li class="page-item disabled">
+          <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        </li>
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+          </li>
+        {% endif %}
+      </ul>
     </nav>
   {% endif %}
 {% endblock %}

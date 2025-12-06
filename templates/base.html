@@ -4,7 +4,6 @@
 <html lang="ru">
   <header class="topbar">
   <nav>
-    <a href="{% url 'profiles' %}" >Главная</a>
     <span class="spacer"></span>
     {% if user.is_authenticated %}
       <span>Вы вошли как {{ user.username }}</span>
@@ -14,21 +13,29 @@
         Выйти
     </button>
     </form>
-      <a href="{% url 'profiles' %}">Мои записи</a>
     {% else %}
       <a href="{% url 'login' %}">Войти</a>
       <a href="{% url 'signup' %}">Регистрация</a>
     {% endif %}
-
   </nav>
 </header>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Гостевая книга{% endblock %}</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <title>{% block title %}Профили{% endblock %}</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
   </head>
   <body>
+    <div class="page">
+     <div class="sidebar">
+    <ul>
+      <li><a href="{% url 'profiles' %}">Главная</a></li>
+      <li><a href="/my_prof/">Мой профиль</a></li>
+      <li><a href="#">Элемент</a></li>
+      <li><a href="#">Элемент</a></li>
+      <li><a href="#">О нас</a></li>
+    </ul>
+  </div>
     <main class="container">
       {% block content %}{% endblock %}
      {% if messages %}
@@ -37,14 +44,6 @@
   </ul>
 {% endif %}
     </main>
-    <div class="sidebar">
-    <ul>
-      <li><a href="#">Элемент 1</a></li>
-      <li><a href="#">Элемент 2</a></li>
-      <li><a href="#">Элемент 3</a></li>
-      <li><a href="#">Элемент 4</a></li>
-      <li><a href="#">Элемент 5</a></li>
-    </ul>
-  </div>
+    </div>
   </body>
 </html>

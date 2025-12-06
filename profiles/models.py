@@ -11,8 +11,8 @@ class DataUser(models.Model):
     about = models.TextField('О себе', max_length=300, blank=True, null=True)
     photo = models.ImageField('Фото', upload_to='photos/', null=True, blank=True)
     created_at = models.DateTimeField('Создано', auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                             related_name='entries', null=True, blank=True, verbose_name='user')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                             related_name='profile', null=True, blank=True, verbose_name='user')
 
 
 
