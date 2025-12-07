@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Вход</h1>
-  {% if form.errors %}<div class="msg error">Неверный логин или пароль</div>{% endif %}
-  <form method="post" class="card">
+<h1>Вход</h1>
+{% if form.errors %}<div class="msg error">Неверный логин или пароль</div>{% endif %}
+<form method="post">
+  <div class="row mb-3">
     {% csrf_token %}
-    <label>Логин</label>{{ form.username }}
-    <label>Пароль</label>{{ form.password }}
-    <button type="submit">Войти</button>
-  </form>
-  <p>Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрируйтесь</a></p>
+    <label class="col-sm-2 col-form-label">Логин</label>{{ form.username }}
+    <label class="col-sm-2 col-form-label">Пароль</label>{{ form.password }}
+  </div>
+  <div class="row mb-3">
+    <button type="submit" class="btn btn-success">Войти</button>
+  </div>
+</form>
+<p>Нет аккаунта? <a class="btn btn-outline-dark" href="{% url 'signup' %}">Зарегистрируйтесь</a></p>
 {% endblock %}

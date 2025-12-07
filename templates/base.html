@@ -1,49 +1,67 @@
-
-
 <!doctype html>
 <html lang="ru">
-  <header class="topbar">
-  <nav>
-    <span class="spacer"></span>
-    {% if user.is_authenticated %}
+<header class="topbar">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'profiles' %}">Профили</a>
+      {% if user.is_authenticated %}
       <span>Вы вошли как {{ user.username }}</span>
-    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-link nav-link" style="padding:0; border:none; background:none;">
-        Выйти
-    </button>
-    </form>
-    {% else %}
-      <a href="{% url 'login' %}">Войти</a>
-      <a href="{% url 'signup' %}">Регистрация</a>
-    {% endif %}
+      <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-light">
+          Выйти
+        </button>
+      </form>
+      {% else %}
+      <ul class="nav nav-tabs">
+      <a class="nav-link" href="{% url 'login' %}">Войти</a>
+      <a class="nav-link" href="{% url 'signup' %}">Регистрация</a>
+      {% endif %}
+      </ul>
+    </div>
   </nav>
 </header>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Профили{% endblock %}</title>
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
-  </head>
-  <body>
-    <div class="page">
-     <div class="sidebar">
-    <ul>
-      <li><a href="{% url 'profiles' %}">Главная</a></li>
-      <li><a href="/my_prof/">Мой профиль</a></li>
-      <li><a href="#">Элемент</a></li>
-      <li><a href="#">Элемент</a></li>
-      <li><a href="#">О нас</a></li>
-    </ul>
-  </div>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Профили{% endblock %}</title>
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+</head>
+
+<body>
+  <div class="page">
+    <div class="sidebar">
+      <ul class="nav nav-underline flex-column mb-auto">
+        <li class="nav-item">        
+          <a class="nav-link {% if request.resolver_match.url_name == 'profiles' %}active{% endif %}"
+             aria-current="{% if request.resolver_match.url_name == 'profiles' %}page{% endif %}"
+             href="{% url 'profiles' %}">Главная</a>
+        </li>
+        <li class="nav-item">
+          <a  class="nav-link {% if request.resolver_match.url_name == 'my_prof' %}active{% endif %}"
+             aria-current="{% if request.resolver_match.url_name == 'my_prof' %}page{% endif %}" href="/my_prof/">Мой профиль</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Элемент</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Элемент</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">О нас</a>
+        </li>
+      </ul>
+    </div>
     <main class="container">
       {% block content %}{% endblock %}
-     {% if messages %}
-  <ul class="messages">
-    {% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}
-  </ul>
-{% endif %}
+      {% if messages %}
+      <ul class="messages">
+        {% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}
+      </ul>
+      {% endif %}
     </main>
-    </div>
-  </body>
+  </div>
+</body>
+
 </html>

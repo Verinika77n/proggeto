@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Удалить запись?</h1>
-  <p><b>{{ object.fname }}</b><br>{{ object.phone }}</p>
+   <h2>Удалить профиль?</h2>
+  <h3 style="color: crimson;">Это действие окончательное. 
+     {% if not request.user.is_staff and not request.user.is_superuser %}
+       При удалении профиля ваш аккаунт также будет удалён, и вы выйдете из системы.
+     {% endif %}
+  </h3>
   <form method="post" class="card" style="max-width:420px">
+    <div role="group" class="btn-group">
     {% csrf_token %}
-    <button type="submit">Удалить</button>
-    <a href="{% url 'profiles-detail' object.id %}">Отмена</a>
+    <button class="btn btn-danger" type="submit">Удалить</button>
+    {% if not request.user.is_staff and not request.user.is_superuser %}
+    <a class="btn btn-light" href="/my_prof/">Отмена</a>
+    {% else %}
+    <a class="btn btn-light" href="{% url 'profiles-detail' object.id %}">Отмена</a>
+    {% endif %}
+    </div>
   </form>
 {% endblock %}

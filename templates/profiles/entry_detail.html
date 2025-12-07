@@ -1,56 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-4">
-  <h1 class="mb-3">{{ entry.fname }}</h1>
+<div class="container-fluid">
+
+  <div class="mt-4">
+    <a class="btn btn-outline-secondary" href="{% url 'profiles' %}" class=" ">← Назад</a>
+  </div>
+  
+  <h1 class="mb-3">{{ entry.fname }} {{ entry.lname }}</h1>
   <p class="text-muted">
     <small>
-      {{ entry.created_at|date:'d.m.Y H:i' }}
-      {% if entry.user %} · автор: {{ entry.user.username }}{% endif %}
+      Дата регистрации: {{ entry.created_at|date:'d.m.Y' }}
+      {% if entry.user %} · ник: {{ entry.user.username }}{% endif %}
     </small>
   </p>
 
   <div class="row">
     <div class="col-md-4">
       {% if entry.photo %}
-        <img src="{{ entry.photo.url }}" 
-             class="img-thumbnail rounded-circle mb-3"
-             alt="{{ entry.fname }} {{ entry.lname }}"
-             style="width:200px; height:200px; object-fit:cover;">
+      <img src="{{ entry.photo.url }}" class="img-thumbnail mb-3"
+        alt="{{ entry.fname }} {{ entry.lname }}" style="width:270px; height:270px; object-fit:cover;">
+      {% else %}
+      <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
+        style="width:160px; height:160px; color:white;">
+        <span class="fs-1">{{ entry.user.username|slice:":1"|upper }}</span>
+      </div>
       {% endif %}
     </div>
 
     <div class="col-md-8">
-      <ul class="list-group list-group-flush">
-        {% if entry.lname %}
-          <li class="list-group-item"><strong>Фамилия:</strong> {{ entry.lname }}</li>
-        {% endif %}
+      <ul class="list-group list-group-flush" style="font-size: 20px;">
         {% if entry.birth_date %}
-          <li class="list-group-item"><strong>Дата рождения:</strong> {{ entry.birth_date|date:"d.m.Y" }}</li>
+        <li class="list-group-item"><strong>Дата рождения:</strong> {{ entry.birth_date|date:"d.m.Y" }}</li>
         {% endif %}
         {% if entry.phone %}
-          <li class="list-group-item"><strong>Телефон:</strong> {{ entry.phone }}</li>
+        <li class="list-group-item"><strong>Телефон:</strong> {{ entry.phone }}</li>
         {% endif %}
         {% if entry.gender %}
-          <li class="list-group-item"><strong>Пол:</strong> {{ entry.gender }}</li>
+        <li class="list-group-item"><strong>Пол:</strong> {{ entry.gender }}</li>
         {% endif %}
         {% if entry.about %}
-          <li class="list-group-item"><strong>О себе:</strong> {{ entry.about }}</li>
+        <li class="list-group-item"><strong>О себе:</strong> {{ entry.about }}</li>
+        {% else %}
+        <li class="list-group-item"><strong>О себе:</strong> Пользователь ничего о себе не рассказал</li>
         {% endif %}
       </ul>
 
       {% if user.is_authenticated %}
-        {% if entry.user == user or user.is_staff %}
-          <div class="mt-3">
-            <a href="{% url 'profiles-edit' entry.id %}" class="btn btn-primary btn-sm">Изменить</a>
-            <a href="{% url 'profiles-delete' entry.id %}" class="btn btn-danger btn-sm">Удалить</a>
-          </div>
-        {% endif %}
+      {% if entry.user == user or user.is_staff %}
+      <div class="mt-3">
+        <a href="{% url 'profiles-edit' entry.id %}" class="btn btn-primary btn-sm">Изменить</a>
+        <a href="{% url 'profiles-delete' entry.id %}" class="btn btn-danger btn-sm">Удалить</a>
+      </div>
+      {% endif %}
       {% endif %}
     </div>
-  </div>
-
-  <div class="mt-4">
-    <a href="{% url 'profiles' %}" class="btn btn-link">← Назад к списку</a>
   </div>
 </div>
 {% endblock %}
