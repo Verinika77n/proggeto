@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<ul  class="nav d-flex justify-content-between align-items-center mb-3">
+<h1 style="margin-bottom: 20px;">Новостная лента</h1>
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="d-flex justify-content-center mt-4">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+    </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+</ul>
+
+<div class="text-center mt-3">
+  <a href="{% url 'blog-create' %}" class="btn btn-success">Добавить запись</a>
+</div>
+<div class="mt-4">
+{% for e in page_obj %}
+
+<div class="card mb-4" style="max-width: 80%; margin-left: auto; margin-right: auto;">
+
+  <div class="card-header">
+    <a href="{% url 'profiles-detail' e.user.profile.id %}" class="nav-link active">Автор: {{ e.user.profile.fname }} {{ e.user.profile.lname }} </a>
+    <p>Создано: {{ e.created_at }}</p>
+  </div>
+
+  <div class="card-body">
+    <a class="nav-link active" href="{% url 'blog-detail' e.id %}">{{ e.content }}</p>
+  </div>
+
+  {% if e.image %}
+   <div class="card-header" style="border: 1px; border-color: darkgrey; border-style:outset;">
+  <img src="{{ e.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;" alt="Изображение записи">
+  </div>
+  {% endif %}
+  
+</div>
+{% empty %}
+<p>Записей нет.</p>
+{% endfor %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="nav justify-content-end">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+    </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+</div>
+{% endblock %}

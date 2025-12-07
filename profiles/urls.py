@@ -1,8 +1,8 @@
-from django.urls import path
+from django.urls import path, include
 
 from .views import EntryListView, EntryDetailView, EntryCreateView, EntryUpdateView, EntryDeleteView, MyProfileView
 
-from .views import signup
+from .views import signup, about
 
 urlpatterns = [
     path('', EntryListView.as_view(), name='profiles'),
@@ -12,4 +12,6 @@ urlpatterns = [
     path('<int:pk>/delete/', EntryDeleteView.as_view(), name='profiles-delete'),
     path('signup/', signup, name='signup'),
     path('my_prof/', MyProfileView.as_view(), name='my_prof'),
+    path('about/',about , name='about'),
+    
 ]

@@ -57,6 +57,8 @@ class EntryCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         messages.success(self.request, 'Данные обновлены')
         return reverse('profiles-detail', args=[self.object.pk])
+    
+    
 
 class OwnerOrStaffRequired(UserPassesTestMixin):
     def test_func(self):
@@ -121,16 +123,27 @@ class MyProfileView(LoginRequiredMixin, DetailView):
 #
 #
 #
+from django.db import transaction
+
 def signup(request):
-  if request.method == 'POST':
-      form = UserCreationForm(request.POST)
-      if form.is_valid():
-          user = form.save()
-          auth_login(request, user)  # сразу войдём
-         
-          messages.success(request, 'Аккаунт создан и выполнен вход')
-          return redirect('profiles')
-  else:
-      form = UserCreationForm()
-  return render(request, 'registration/signup.html', {'form': form})
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        form_prof = DataUserForm(request.POST, request.FILES)
+        if form.is_valid() and form_prof.is_valid():
+            with transaction.atomic():
+                user = form.save()
+                profile = form_prof.save(commit=False)
+                profile.user = user
+                profile.save()
+            auth_login(request, user)
+            messages.success(request, 'Аккаунт создан и выполнен вход')
+            return redirect('profiles')
+    else:
+        form = UserCreationForm()
+        form_prof = DataUserForm()
+    return render(request, 'registration/signup.html', {'form': form, 'form_prof': form_prof})
+
+def about(request):
+    return render(request, 'about.html')
+
 

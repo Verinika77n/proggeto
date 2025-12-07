@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<nuv class="container-fluid">
+    <div class="mt-4">
+       <a class="btn btn-outline-secondary" href="{{ request.META.HTTP_REFERER }}" >← Назад</a>
+    </div>
+    <ul class="nav flex-column">
+        <h1 class="mb-4">Удалить запись?</h1>
+        <p> Ее нельзя будет восстановить </p>
+        <form method="post">
+            {% csrf_token %}
+            
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a href="{% url 'blog-detail' object.id %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </ul>
+</nuv>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <a  
+        class="nav-link active"> Автор: {{ object.user.profile.fname }} {{ object.user.profile.lname }} </a>
+        <p class="card-text">{{ object.content }}</p>
+        <p class="text-muted"><small>Создано: {{ object.created_at|date:'d.m.Y H:i' }}</small></p>
+        {% if object.image %}
+        <img src="{{ object.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;"
+            alt="Изображение записи">
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -3,9 +3,9 @@
 <div class="container-fluid">
 
   <div class="mt-4">
-    <a class="btn btn-outline-secondary" href="{% url 'profiles' %}" class=" ">← Назад</a>
+    <a class="btn btn-outline-secondary" href="{{ request.META.HTTP_REFERER }}">← Назад</a>
   </div>
-  
+
   <h1 class="mb-3">{{ entry.fname }} {{ entry.lname }}</h1>
   <p class="text-muted">
     <small>
@@ -17,8 +17,8 @@
   <div class="row">
     <div class="col-md-4">
       {% if entry.photo %}
-      <img src="{{ entry.photo.url }}" class="img-thumbnail mb-3"
-        alt="{{ entry.fname }} {{ entry.lname }}" style="width:270px; height:270px; object-fit:cover;">
+      <img src="{{ entry.photo.url }}" class="img-thumbnail mb-3" alt="{{ entry.fname }} {{ entry.lname }}"
+        style="width:270px; height:270px; object-fit:cover;">
       {% else %}
       <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
         style="width:160px; height:160px; color:white;">
@@ -32,6 +32,7 @@
         {% if entry.birth_date %}
         <li class="list-group-item"><strong>Дата рождения:</strong> {{ entry.birth_date|date:"d.m.Y" }}</li>
         {% endif %}
+        <li class="list-group-item"><strong>Возраст:</strong> {{ entry.get_age }} </li>
         {% if entry.phone %}
         <li class="list-group-item"><strong>Телефон:</strong> {{ entry.phone }}</li>
         {% endif %}
@@ -53,7 +54,37 @@
       </div>
       {% endif %}
       {% endif %}
-    </div>
+      </div>
+      <h3> Записи пользователя</h3>
+      <div class="mt-4">
+      {% if entry.user.blog.count == 0 %}
+      <p>У пользователя нет записей.</p>
+      {% endif %}
+      
+      {% for e in entry.user.blog.all %}
+      <div class="card mb-4" style="max-width: 100%; margin-left: auto; margin-right: auto;">
+        <div class="card-header">
+          <a href="{% url 'profiles-detail' e.user.profile.id %}" 
+          class="nav-link active">Автор: {{ e.user.profile.fname }}
+            {{ e.user.profile.lname }} </a>
+          <p>Создано: {{ e.created_at }}</p>
+        </div>
+
+        <div class="card-body">
+          <a class="nav-link active" href="{% url 'blog-detail' e.id %}">{{ e.content }}</p>
+        </div>
+
+        {% if e.image %}
+        <div class="card-header" style="border: 1px; border-color: darkgrey; border-style:outset;">
+          <img src="{{ e.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;"
+            alt="Изображение записи">
+        </div>
+        {% endif %}
+        </div>
+        {% endfor %}
+
+
+      </div>
+    
   </div>
-</div>
-{% endblock %}
+  {% endblock %}

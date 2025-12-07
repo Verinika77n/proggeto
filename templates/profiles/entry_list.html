@@ -1,28 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
 {% if user.is_authenticated and user.profile %}
+<ul  class="nav d-flex justify-content-between align-items-center mb-3">
 <h1>Профили</h1>
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="d-flex justify-content-center mt-4">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+    </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+</ul >
+
 <form method="get" class="card p-3 mb-3">
   <div class="input-group">
     <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Поиск по имени/сообщению">
     <button type="submit" class="btn btn-primary">Искать</button>
   </div>
 </form>
-<div class="row">
+<div class="row" >
   {% for e in page_obj %}
   <div class="col-md-4 mb-4">
     <div class="card h-100 text-center">
-    <div style="min-height: 200px;" class="card-body">
-      {% if e.photo %}
-      <img src="{{ e.photo.url }}" class="rounded-circle mx-auto d-block mt-3" alt="{{ e.fname }} {{ e.lname }}"
-        style="width:150px; height:150px; object-fit:cover; border: 1px; border-color: #000000; border-style: solid;">
-      {% else %}
-      <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto avatar"
-        style="width:150px; height:150px; color:white; margin-top: 20px;" role="img">
-        <span class="fs-1">{{ e.user.username|slice:":1"|upper }}</span>
+      <div style="min-height: 200px;" class="card-body">
+        {% if e.photo %}
+        <img src="{{ e.photo.url }}" class="rounded-circle mx-auto d-block mt-3" alt="{{ e.fname }} {{ e.lname }}"
+          style="width:150px; height:150px; object-fit:cover; border: 1px; border-color: #000000; border-style: solid;">
+        {% else %}
+        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
+          style="width:150px; height:150px; color:white; margin-top: 20px; " role="img">
+          <span class="fs-1">{{ e.user.username|slice:":1"|upper }}</span>
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
-    </div>
       <div class="card-body">
         <h5 class="card-title">
           {% if e.user == user %}
@@ -51,26 +73,6 @@
   <p>Нет информации</p>
   {% endfor %}
 </div>
-
-{% if page_obj.paginator.num_pages > 1 %}
-<nav class="d-flex justify-content-center mt-4">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-    <li class="page-item">
-      <a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
-    </li>
-    {% endif %}
-    <li class="page-item disabled">
-      <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
-    </li>
-    {% if page_obj.has_next %}
-    <li class="page-item">
-      <a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
-    </li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
 {% else %}
 <div class="alert alert-warning" role="alert">
   У вас нет профиля. Пожалуйста, создайте его <a href="{% url 'profiles-create' %}">Создать профиль</a>.

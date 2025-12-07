@@ -77,7 +77,7 @@ class DataUserForm(forms.ModelForm):
                 w, h = get_image_dimensions(photo)
                 if w < 100 or h < 100:
                     raise forms.ValidationError('Изображение слишком маленькое. Минимум 100×100 px.')
-                if photo.size > 5 * 1024 * 1024:  # 5 МБ
+                if photo.size > 5 * 1024 * 1024:  
                     raise forms.ValidationError('Файл изображения слишком большой (максимум 5 МБ).')
             except Exception:
                 raise forms.ValidationError('Не удалось обработать изображение.')
@@ -85,7 +85,6 @@ class DataUserForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Делаем поля обязательными/необязательными при необходимости
         self.fields['about'].required = False
         self.fields['photo'].required = False
 

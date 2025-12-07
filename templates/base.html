@@ -14,9 +14,9 @@
       </form>
       {% else %}
       <ul class="nav nav-tabs">
-      <a class="nav-link" href="{% url 'login' %}">Войти</a>
-      <a class="nav-link" href="{% url 'signup' %}">Регистрация</a>
-      {% endif %}
+        <a class="nav-link" href="{% url 'login' %}">Войти</a>
+        <a class="nav-link" href="{% url 'signup' %}">Регистрация</a>
+        {% endif %}
       </ul>
     </div>
   </nav>
@@ -33,23 +33,27 @@
   <div class="page">
     <div class="sidebar">
       <ul class="nav nav-underline flex-column mb-auto">
-        <li class="nav-item">        
+        <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'profiles' %}active{% endif %}"
-             aria-current="{% if request.resolver_match.url_name == 'profiles' %}page{% endif %}"
-             href="{% url 'profiles' %}">Главная</a>
+            aria-current="{% if request.resolver_match.url_name == 'profiles' %}page{% endif %}"
+            href="{% url 'profiles' %}">Главная</a>
         </li>
         <li class="nav-item">
-          <a  class="nav-link {% if request.resolver_match.url_name == 'my_prof' %}active{% endif %}"
-             aria-current="{% if request.resolver_match.url_name == 'my_prof' %}page{% endif %}" href="/my_prof/">Мой профиль</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'my_prof' %}active{% endif %}"
+            aria-current="{% if request.resolver_match.url_name == 'my_prof' %}page{% endif %}" href="/my_prof/">Мой
+            профиль</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'blog' %}active{% endif %}"
+            aria-current="{% if request.resolver_match.url_name == 'blog' %}page{% endif %}" href="/blog/">Новостная лента</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Элемент</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Элемент</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">О нас</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
+            aria-current="{% if request.resolver_match.url_name == 'about' %}page{% endif %}" href="/about/">О
+            проекте</a>
         </li>
       </ul>
     </div>

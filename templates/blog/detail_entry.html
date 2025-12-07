@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<nuv class="container-fluid">
+    <div class="mt-4">
+        <a class="btn btn-outline-secondary" href="{{ request.META.HTTP_REFERER }}" >← Назад</a>
+    </div>
+    <ul class="nav d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-4">Детали записи</h1>
+        {% if user.is_authenticated %}
+        {% if entry.user == user or user.is_staff %}
+        <div class="btn-group" role="group">
+            <a class="btn btn-primary" href="{% url 'blog-edit' entry.id %}">Изменить</a>
+            <a class="btn btn-danger" href="{% url 'blog-delete' entry.id %}">Удалить</a> 
+        </div>
+        {% endif %}
+        {% endif %}
+
+    </ul>
+</nuv>
+<div class="card mb-4">
+
+    <div class="card-body">
+        <a href="{% url 'profiles-detail' entry.user.profile.id %}" class="nav-link active"> Автор: {{ entry.user.profile.fname }} {{ entry.user.profile.lname }} </a>
+
+        <p class="card-text">{{ entry.content }}</p>
+        <p class="text-muted"><small>Создано: {{ entry.created_at|date:'d.m.Y H:i' }}</small></p>
+        {% if entry.image %}
+        <img src="{{ entry.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;"
+            alt="Изображение записи">
+        {% endif %}
+    </div>
+</div>
+    {% endblock %}

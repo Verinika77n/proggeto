@@ -1,85 +1,110 @@
 {% extends 'base.html' %}
 {% block content %}
-  <div class="mt-4">
-    <a class="btn btn-outline-secondary" href="{% url 'profiles' %}" class=" ">← Назад</a>
+<div class="mt-4">
+  <a class="btn btn-outline-secondary" href="{% url 'profiles' %}" class=" ">← Назад</a>
+</div>
+<h1 class="mb-3 text-center">Мой профиль</h1>
+
+{% if user.is_authenticated %}
+{% if entry and user.profile %}
+<div class="container">
+  <div class="row align-items-center mb-4">
+    <div class="container" style="max-width: 700px;">
+      {% if entry.photo %}
+      <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
+        style="width:200px; height:200px; color:white;">
+        <img src="{{ entry.photo.url }}" class="rounded-circle img-thumbnail " alt="{{ entry.fname }} {{ entry.lname }}"
+          style="width:200px; height:200px; object-fit:cover;">
+      </div>
+      {% else %}
+      <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
+        style="width:160px; height:160px; color:white;">
+        <span class="fs-1">{{ entry.user.username|slice:":1"|upper }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="col-md-8">
+      <h2 class="mb-1">
+        {% if entry.fname or entry.lname %}
+        {{ entry.fname }} {{ entry.lname }}
+        {% else %}
+        Без имени
+        {% endif %}
+      </h2>
+      <p class="text-muted mb-2"><strong>Ник:</strong> {{ user.username }}</p>
+
+      <ul class="list-group list-group-flush" style="font-size: 18px;">
+        {% if entry.phone %}
+        <li class="list-group-item"><strong>Телефон:</strong> {{ entry.phone }}</li>
+        {% endif %}
+        {% if entry.birth_date %}
+        <li class="list-group-item"><strong>Дата рождения:</strong> {{ entry.birth_date|date:"d.m.Y" }} |
+          <strong>Возраст: </strong> {{ entry.get_age }}
+        </li>
+        {% endif %}
+        {% if entry.gender %}
+        <li class="list-group-item"><strong>Пол:</strong> {{ entry.gender }}</li>
+        {% endif %}
+        {% if entry.about %}
+        <li class="list-group-item"><strong>О себе:</strong> {{ entry.about }}</li>
+        {% else %}
+        <li class="list-group-item"><strong>О себе:</strong> Пользователь ничего о себе не рассказал</li>
+        {% endif %}
+      </ul>
+
+      {% if not entry.phone and not entry.birth_date and not entry.gender and not entry.about and not entry.photo %}
+      <div class="alert alert-info mt-3">
+        У вас уже есть профиль, но данные ещё не заполнены.
+      </div>
+      {% endif %}
+
+      <div class="mt-3">
+        <a href="{% url 'profiles-edit' entry.pk %}" class="btn btn-primary">Редактировать</a>
+        <a href="{% url 'blog-create' %}" class="btn btn-success">Добавить запись в блог</a>
+        <a href="{% url 'profiles-delete' entry.pk %}" class="btn btn-danger">Удалить профиль</a>
+      </div>
+
+      <p class="text-muted mt-2">
+        <small>Создано: {{ entry.created_at|date:"d.m.Y" }}</small>
+      </p>
+    </div>
   </div>
-  <h1 class="mb-3 text-center">Мой профиль</h1>
+</div>
+<h3>Мои записи</h3>
+<div class="mt-4">
+  {% for e in user.blog.all %}
+  <div class="card mb-4" style="max-width: 80%; margin-left: auto; margin-right: auto;">
+    <div class="card-header">
 
-  {% if user.is_authenticated %}
-    {% if entry and user.profile %}
-      <div class="container">
-        <div class="row align-items-center mb-4">
-          <div class="container" style="max-width: 700px;">
-            {% if entry.photo %}
-             <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
-                   style="width:200px; height:200px; color:white;">
-              <img src="{{ entry.photo.url }}" 
-                   class="rounded-circle img-thumbnail "
-                   alt="{{ entry.fname }} {{ entry.lname }}"
-                   style="width:200px; height:200px; object-fit:cover;">
-              </div>
-            {% else %}
-              <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
-                   style="width:160px; height:160px; color:white;">
-                <span class="fs-1">{{ entry.user.username|slice:":1"|upper }}</span>
-              </div>
-            {% endif %}
-          </div>
+      <a href="{% url 'profiles-detail' e.user.profile.id %}" class="nav-link active">Автор: {{ e.user.profile.fname }}
+        {{ e.user.profile.lname }} </a>
+      <p>Создано: {{ e.created_at }}</p>
+    </div>
 
-          <div class="col-md-8">
-            <h2 class="mb-1">
-              {% if entry.fname or entry.lname %}
-                {{ entry.fname }} {{ entry.lname }}
-              {% else %}
-                Без имени
-              {% endif %}
-            </h2>
-            <p class="text-muted mb-2"><strong>Ник:</strong> {{ user.username }}</p>
+    <div class="card-body">
+      <a class="nav-link active" href="{% url 'blog-detail' e.id %}">{{ e.content }}</p>
+    </div>
 
-            <ul class="list-group list-group-flush" style="font-size: 18px;">
-              {% if entry.phone %}
-                <li class="list-group-item"><strong>Телефон:</strong> {{ entry.phone }}</li>
-              {% endif %}
-              {% if entry.birth_date %}
-                <li class="list-group-item"><strong>Дата рождения:</strong> {{ entry.birth_date|date:"d.m.Y" }}</li>
-              {% endif %}
-              {% if entry.gender %}
-                <li class="list-group-item"><strong>Пол:</strong> {{ entry.gender }}</li>
-              {% endif %}
-              {% if entry.about %}
-                <li class="list-group-item"><strong>О себе:</strong> {{ entry.about }}</li>
-                {% else %}
-                <li class="list-group-item"><strong>О себе:</strong> Пользователь ничего о себе не рассказал</li>
-              {% endif %}
-            </ul>
-
-            {% if not entry.phone and not entry.birth_date and not entry.gender and not entry.about and not entry.photo %}
-              <div class="alert alert-info mt-3">
-                У вас уже есть профиль, но данные ещё не заполнены.
-              </div>
-            {% endif %}
-
-            <div class="mt-3">
-              <a href="{% url 'profiles-edit' entry.pk %}" class="btn btn-primary">Редактировать</a>
-              <a href="{% url 'profiles-delete' entry.pk %}" class="btn btn-danger">Удалить профиль</a>
-            </div>
-
-            <p class="text-muted mt-2">
-              <small>Создано: {{ entry.created_at|date:"d.m.Y H:i" }}</small>
-            </p>
-          </div>
-        </div>
-      </div>
-      
-    {% else %}
-      <div class="alert alert-warning text-center" style="max-width: 600px; margin: 0 auto;">
-        У вас пока нет данных профиля.
-      </div>
-      <div class="text-center mt-3">
-        <a href="{% url 'profiles-create' %}" class="btn btn-success">Заполнить профиль</a>
-      </div>
+    {% if e.image %}
+    <div class="card-header" style="border: 1px; border-color: darkgrey; border-style:outset;">
+      <img src="{{ e.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;" alt="Изображение записи">
+    </div>
     {% endif %}
-  {% else %}
-    <p class="text-center">Пожалуйста, войдите, чтобы просмотреть профиль.</p>
-  {% endif %}
+
+  </div>
+  {% empty %}
+  <p>У вас пока нет записей в блоге.</p>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="alert alert-warning text-center" style="max-width: 600px; margin: 0 auto;">
+  У вас пока нет данных профиля.
+</div>
+<div class="text-center mt-3">
+  <a href="{% url 'profiles-create' %}" class="btn btn-success">Заполнить профиль</a>
+</div>
+{% endif %}
+{% endif %}
 {% endblock %}
