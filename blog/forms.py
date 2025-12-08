@@ -1,5 +1,5 @@
 from django import forms
-from .models import BlogEntry
+from .models import BlogEntry, BlogActivity
 from django.core.files.images import get_image_dimensions
 
 
@@ -27,3 +27,22 @@ class BlogEntryForm(forms.ModelForm):
         if content and len(content) < 5:
             raise forms.ValidationError('Текст записи должен содержать не менее 5 символов.')
         return content
+    
+
+class BlogActivityForm(forms.ModelForm):
+    class Meta:
+        model = BlogActivity
+        fields = ['like', 'hide', 'comment']
+        widgets = {
+            'like': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'hide': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'comment': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите комментарий...'
+            }),
+        }
+        labels = {
+            'like': 'Лайк',
+            'hide': 'Скрыть',
+            'comment': 'Комментарий',
+        }

@@ -2,6 +2,7 @@
 {% block content %}
 <ul  class="nav d-flex justify-content-between align-items-center mb-3">
 <h1 style="margin-bottom: 20px;">Новостная лента</h1>
+<!-- ПАГИНАЦИЯ -->
 {% if page_obj.paginator.num_pages > 1 %}
 <nav class="d-flex justify-content-center mt-4">
   <ul class="pagination">
@@ -24,11 +25,19 @@
 </ul>
 
 <div class="text-center mt-3">
-  <a href="{% url 'blog-create' %}" class="btn btn-success">Добавить запись</a>
+<form method="get" class="card p-3 mb-3">
+  <div class="input-group">
+    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Поиск по имени/сообщению">
+    <button type="submit" class="btn btn-primary">Искать</button>
+  </div>
+</form>
+<a href="{% url 'blog-create' %}" class="btn btn-success">Добавить запись</a>
 </div>
 <div class="mt-4">
+
 {% for e in page_obj %}
 
+<!-- ЭТО ПОСТЫ карточки каждого -->
 <div class="card mb-4" style="max-width: 80%; margin-left: auto; margin-right: auto;">
 
   <div class="card-header">
@@ -45,8 +54,21 @@
   <img src="{{ e.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;" alt="Изображение записи">
   </div>
   {% endif %}
-  
+<!-- ОТРЕДАЧИТЬ НЕ РАБОТАЕТ НИЧЕГО -->
+  <div class="card-body" style="">
+    <form style="display:inline;">
+      {% csrf_token %}
+      <button type="" class="btn btn-outline-primary">
+        💘 ({{ e.likes.count }})
+      </button>
+    </form>
+  </div>
+
+  <div class="card-header text-muted">
+    <a href="{% url 'blog-detail' e.id %}#comments-section" class="nav-link active">Комментарии ({{ e.comments.count }})</a>
 </div>
+</div>
+<!-- логики пока нет-->
 {% empty %}
 <p>Записей нет.</p>
 {% endfor %}

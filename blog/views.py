@@ -18,7 +18,7 @@ class SearchMixin:
         qs = super().get_queryset()
         q = self.request.GET.get('q', '').strip()
         if q:
-            qs = qs.filter(Q(content__icontains=q))
+            qs = qs.filter(Q(user__profile__fname__icontains=q)|Q(content__icontains=q) | Q(user__profile__lname__icontains=q))
         return qs
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
