@@ -65,8 +65,8 @@ class BlogUpdateView(LoginRequiredMixin,OwnerOrStaffRequired, UpdateView):
     form_class = BlogEntryForm
     template_name = 'blog/new_entry.html'
 
-    def get_object(self, queryset=None):
-        return self.request.user.blogentry_set.get(pk=self.kwargs['pk'])
+    def get_object(self):
+        return self.request.user.blog.get(pk=self.kwargs['pk'])
 
     def get_success_url(self):
         messages.success(self.request, 'Данные обновлены')
@@ -78,7 +78,8 @@ class BlogDeleteView(LoginRequiredMixin, OwnerOrStaffRequired, DeleteView):
     template_name = 'blog/delete_entry.html'
     success_url = reverse_lazy('blog')
     def get_object(self, queryset=None):
-        return self.request.user.blogentry_set.get(pk=self.kwargs['pk'])
+        return self.request.user.blog.get(pk=self.kwargs['pk'])
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Запись удалена')
         return super().delete(request, *args, **kwargs)
+

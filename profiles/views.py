@@ -91,11 +91,9 @@ class EntryDeleteView(LoginRequiredMixin, OwnerOrStaffRequired, DeleteView):
         if user.is_staff or user.is_superuser:
             self.object.delete()
             messages.success(request, 'Профиль удалён')
-            print(123)
             return redirect('profiles')
         logout(request)              
-        user.delete()       
-        print(456)        
+        user.delete()               
         messages.success(request, 'Профиль и аккаунт удалены')
         return redirect('login')     
 
@@ -129,19 +127,16 @@ def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         form_prof = DataUserForm(request.POST, request.FILES)
-        if form.is_valid() and form_prof.is_valid():
+        if form.is_valid():
             with transaction.atomic():
                 user = form.save()
-                profile = form_prof.save(commit=False)
-                profile.user = user
-                profile.save()
             auth_login(request, user)
             messages.success(request, 'Аккаунт создан и выполнен вход')
             return redirect('profiles')
     else:
         form = UserCreationForm()
-        form_prof = DataUserForm()
-    return render(request, 'registration/signup.html', {'form': form, 'form_prof': form_prof})
+
+    return render(request, 'registration/signup.html', {'form': form})
 
 def about(request):
     return render(request, 'about.html')
