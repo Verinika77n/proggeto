@@ -9,7 +9,7 @@ class BlogEntryAdmin(admin.ModelAdmin):
 
 @admin.register(BlogActivity)
 class BlogActivityAdmin(admin.ModelAdmin):
-    list_display = ('id', 'blog_entry', 'user', 'like', 'hide', 'comment', 'timestamp')
+    list_display = ('id', 'blog_entry', 'user', 'action', 'comment', 'timestamp')
     search_fields = ('blog_entry__id', 'user__username', 'comment')
     ordering = ['-timestamp']
     

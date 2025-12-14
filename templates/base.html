@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-bs-theme="light">
 <header class="topbar">
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -58,12 +58,12 @@
       </ul>
     </div>
     <main class="container">
-      {% block content %}{% endblock %}
       {% if messages %}
       <ul class="messages">
         {% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}
       </ul>
       {% endif %}
+      {% block content %}{% endblock %}     
     </main>
   </div>
 </body>

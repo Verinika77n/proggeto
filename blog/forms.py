@@ -32,17 +32,16 @@ class BlogEntryForm(forms.ModelForm):
 class BlogActivityForm(forms.ModelForm):
     class Meta:
         model = BlogActivity
-        fields = ['like', 'hide', 'comment']
+        fields = ['action', 'comment']
         widgets = {
-            'like': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'hide': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'action': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'comment': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Введите комментарий...'
             }),
         }
         labels = {
-            'like': 'Лайк',
-            'hide': 'Скрыть',
+            'action': 'действие',
+
             'comment': 'Комментарий',
         }

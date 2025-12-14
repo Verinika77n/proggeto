@@ -3,6 +3,7 @@ from django.urls import path, include
 from .views import blog, BlogCreateView, BlogDetailView, BlogUpdateView, BlogDeleteView
 from profiles.views import signup
 
+
 urlpatterns = [
     path('', blog.as_view(), name='blog'),
     path('profiles/', include('profiles.urls')),
@@ -10,6 +11,5 @@ urlpatterns = [
     path('<int:pk>/', BlogDetailView.as_view(), name='blog-detail'),
     path('<int:pk>/edit/', BlogUpdateView.as_view(), name='blog-edit'),
     path('<int:pk>/delete/', BlogDeleteView.as_view(), name='blog-delete'),
-    path('signup/', signup, name='signup'),
 
 ]
