@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load blog_filters %}
 <div class="container-fluid">
 
   <div class="mt-4">
@@ -80,7 +81,27 @@
             alt="Изображение записи">
         </div>
         {% endif %}
-        </div>
+       
+<div class="card-body" >
+    <form method="post" action="{% url 'blog' %}">
+      {% csrf_token %}
+      <input type="hidden" name="e_id" value="{{ e.id }}">
+
+    <button type="submit" class="btn btn-sm btn-outline-primary">
+        {% if e|is_liked_by:user %}
+            ❤️
+        {% else %}
+            🤍
+        {% endif %}
+        {{ e.likes_count }}
+    </button>
+    </form>
+  </div>
+
+  <div class="card-header text-muted">
+    <a href="{% url 'blog-detail' e.id %}#comments-section" class="nav-link active">Комментарии ({{ e.comments.count }})</a>
+</div>
+</div>
         {% endfor %}
 
 

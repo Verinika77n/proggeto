@@ -108,7 +108,7 @@ class BlogDetailView(DetailView):
                 )
                 messages.success(request, 'Лайк добавлен.')
 
-        elif form_type == "form2":  # комментарий
+        elif form_type == "form2":  
             comment_text = request.POST.get('comment_text', '').strip()
             if comment_text:
                 BlogActivity.objects.create(
@@ -120,6 +120,19 @@ class BlogDetailView(DetailView):
                 messages.success(request, 'Комментарий добавлен.')
             else:
                 messages.error(request, 'Комментарий не может быть пустым.')
+        elif form_type == "delete_comment": 
+            comment_id = request.POST.get('comment_id')
+            comment = BlogActivity.objects.filter(
+                pk=comment_id,
+                blog_entry=entry,
+                user=request.user,
+                action='comment'
+            ).first()
+            if comment:
+                comment.delete()
+                messages.success(request, 'Комментарий удалён.')
+            else:
+                messages.error(request, 'Комментарий не найден или у вас нет прав на его удаление.')
 
         return redirect(reverse('blog-detail', kwargs={'pk': entry.pk}))
 

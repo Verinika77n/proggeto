@@ -3,19 +3,19 @@
 {% load blog_filters %}
 <nuv class="container-fluid">
     <div class="mt-4">
-        <a class="btn btn-outline-secondary" href="{{ request.META.HTTP_REFERER }}">← Назад</a>
+        <a class="btn btn-outline-secondary" href="/blog/#{{ entry.id }}">← Назад</a>
     </div>
-    <ul class="nav d-flex justify-content-between align-items-center mb-3">
-        <h1 class="mb-4">Детали записи</h1>
+    <ul class="nav d-flex justify-content-between align-items-center">
+        <h1 class="mb-4">Детали поста</h1>
         {% if user.is_authenticated %}
         {% if entry.user == user or user.is_staff %}
         <div class="btn-group" role="group">
             <a class="btn btn-primary" href="{% url 'blog-edit' entry.id %}">Изменить</a>
             <a class="btn btn-danger" href="{% url 'blog-delete' entry.id %}">Удалить</a>
+            
         </div>
         {% endif %}
         {% endif %}
-
     </ul>
 </nuv>
 <div class="card mb-4">
@@ -32,17 +32,18 @@
                 <span class="fs-1">{{ entry.user.username|slice:":1"|upper }}</span>
             </div>
             {% endif %}
-            <div style="margin-left: 12px;">
-            <a href="{% url 'profiles-detail' entry.user.profile.id %}" class="nav-link active"> {{ entry.user.profile.fname }} {{ entry.user.profile.lname }} </a>
-            <p class="text-muted"><small> {{ entry.created_at|date:'d.m.Y H:i' }}</small></p>
+            <div style="margin-left: 12px;" >
+                <a href="{% url 'profiles-detail' entry.user.profile.id %}" class="nav-link active"> 
+                    {{ entry.user.profile.fname }} {{ entry.user.profile.lname }} </a>
+                <p class="text-muted"><small> {{ entry.created_at|date:'d.m.Y H:i' }}</small></p>
             </div>
         </ul>
-        <div class="card-body" >
-        <p class="card-text">{{ entry.content }}</p>
-        
+        <div class="card-title my-3">
+            <p class="card-text">{{ entry.content }}</p>
+
         </div>
         {% if entry.image %}
-        
+
         <img src="{{ entry.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;"
             alt="Изображение записи">
         {% endif %}
@@ -55,12 +56,17 @@
         <input type="hidden" name="e_id" value="{{ entry.id }}">
 
         <button type="submit" name="form_type" value="form1" class="btn btn-sm btn-outline-primary">
+            <ul class="list-group list-group-horizontal align-items-start">
+            <h4>
             {% if entry|is_liked_by:user %}
             ❤️
             {% else %}
             🤍
             {% endif %}
+            
             {{ entry.likes_count }}
+             </h4>
+           </ul>
         </button>
     </form>
 </div>
@@ -72,35 +78,64 @@
         <h3>Комментарии</h3>
         {% for comment in entry.comments %}
         <div class="card mb-3" style="max-width: 80%; margin-left: auto; margin-right: auto;">
-            <div class="card-body">
-                <a href="{% url 'profiles-detail' comment.user.profile.id %}" class="nav-link active"> 
-                    {{ comment.user.profile.fname }} {{ comment.user.profile.lname }}: </a>
-                <p class="card-text">{{ comment.comment }}</p>
-                <p class="text-muted"><small>Создано: {{ comment.timestamp|date:'d.m.Y H:i' }}</small></p>
-                <div class="d-flex gap-2">
-                    <p>update</p>
-                    <p>delete</p>
+            <div class="card-body" style="margin-right: auto;">
+                 <ul class="list-group list-group-horizontal align-items-start">
+                {% if comment.user.profile.photo %}
+                <img src="{{ comment.user.profile.photo.url }}" class="rounded-circle"
+                    alt="{{ comment.user.profile.fname }} {{ comment.user.profile.lname }}"
+                    style="width:70px; height:70px; object-fit:cover; flex-shrink:0; margin-top: auto;">
+                {% else %}
+                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
+                    style="width:70px; height:70px; color:white; flex-shrink:0;margin-top: auto;">
+                    <span class="fs-1">{{ comment.user.username|slice:":1"|upper }}</span>
                 </div>
-             
+                {% endif %}
+                <div style="margin-left: 12px; margin-top: auto;">
+                <a href="{% url 'profiles-detail' comment.user.profile.id %}" class="nav-link active">
+                    {{ comment.user.profile.fname }} {{ comment.user.profile.lname }}: </a>
+                    <p class="text-muted"><small>{{ comment.timestamp|date:'d.m.Y H:i' }}</small></p>
+                    </div>
+
+                {% if comment.user == user or user.is_staff %}
+                <div class="d-flex flex-row-reverse">
+                    <div class="p-2">
+                   <form method="post" action="{% url 'blog-detail' entry.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                    <button type="submit" name="form_type" value="delete_comment"  
+                    onclick="return confirm('Удалить комментарий?');" class="btn btn-sm btn-outline-danger">Удалить</button>
+                    </form>
+                    </div>
+                </div>
+                {% endif %}
+
+                </ul>
+                <p class="card-text" style="margin-top: 10px;">{{ comment.comment }}</p>
+            
             </div>
         </div>
 
         {% empty %}
         <p>Комментариев нет.</p>
         {% endfor %}
+
         {% if user.is_authenticated %}
+
         <div class="card mt-4">
             <div class="card-body" `>
                 <h5 class="card-title">Добавить комментарий</h5>
+
                 <form method="post" action="{% url 'blog-detail' entry.id %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        
+
                         <textarea class="form-control" id="comment" name="comment_text" rows="3" required></textarea>
                     </div>
                     <button type="submit" name="form_type" value="form2" class="btn btn-primary">Отправить</button>
                 </form>
+
             </div>
+
         </div>
         {% else %}
         <p class="mt-4">Чтобы оставить комментарий, пожалуйста, <a href="{% url 'login' %}">войдите в систему</a>.</p>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="mb-4">{% if object %}Изменить{% else %}Добавить{% endif %} запись</h1>
+<h1 class="mb-4">{% if object %}Изменить{% else %}Добавить{% endif %} пост</h1>
 {% if user.is_authenticated %}
 <form method="post" class="card p-4" enctype="multipart/form-data">
   {% csrf_token %}
@@ -17,7 +17,7 @@
     </div>
     <div class="d-flex gap-2">
     <button type="submit" class="btn btn-primary">Сохранить</button>
-    <a href="/blog/" class="btn btn-secondary">Отмена</a>
+    <a href="{% url 'blog-detail' object.id %}" class="btn btn-secondary">Отмена</a>
     </div>
 </form>
 {% else %}

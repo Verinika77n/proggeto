@@ -59,8 +59,8 @@
     </div>
     <main class="container">
       {% if messages %}
-      <ul class="messages">
-        {% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}
+      <ul class="alert alert-primary">
+        {% for m in messages %}<p class="msg {{ m.tags }}">{{ m }}</p>{% endfor %}
       </ul>
       {% endif %}
       {% block content %}{% endblock %}     
