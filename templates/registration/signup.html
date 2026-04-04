@@ -1,21 +1,42 @@
 {% extends 'base.html' %}
-{% block content %}
-<h1>Регистрация</h1>
-<form method="post" class="card p-4">
-   <div class="row mb-3">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <label class="col-sm-2 col-form-label">Логин</label>{{ form.username }}{{ form.username.errors }}
-  
-  <label class="col-sm-2 col-form-label">Пароль</label>{{ form.password1 }}{{ form.password1.errors }}
-  <label class="col-sm-2 col-form-label">Пароль (повтор)</label>{{ form.password2 }}{{ form.password2.errors }}
-  </div>
-  <div class="row mb-3">
-  <button type="submit" class="btn btn-success">Зарегистрироваться</button>
-  </div>
-</form>
-<div class="mt-2">
-<p>Уже есть аккаунт? <a class="btn btn-outline-dark" href="{% url 'login' %}">Войдите</a></p>
-</div>
-{% endblock %}
 
+{% block content %}
+
+<h1 class="page-title">Регистрация</h1>
+
+<form method="post" class="form">
+  {% csrf_token %}
+
+  {{ form.non_field_errors }}
+
+  <div class="form-group">
+    <label>Логин</label>
+    {{ form.username }}
+    {{ form.username.errors }}
+  </div>
+
+  <div class="form-group">
+    <label>Пароль</label>
+    {{ form.password1 }}
+    {{ form.password1.errors }}
+  </div>
+
+  <div class="form-group" >
+    <label>Пароль (повтор)</label>
+    {{ form.password2 }}
+    {{ form.password2.errors }}
+  </div>
+
+  <button type="submit" class="primary-btn" >
+    Зарегистрироваться
+  </button>
+</form>
+
+<div class="auth-switch" >
+  <p>
+    Уже есть аккаунт?
+    <a class="log_sig" href="{% url 'login' %}">Войдите</a>
+  </p>
+</div>
+
+{% endblock %}

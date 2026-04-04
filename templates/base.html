@@ -1,71 +1,69 @@
+{% load static %}
 <!doctype html>
-<html lang="ru" data-bs-theme="light">
-<header class="topbar">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'profiles' %}">Профили</a>
-      {% if user.is_authenticated %}
-      <span>Вы вошли как {{ user.username }}</span>
-      <form action="{% url 'logout' %}" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-light">
-          Выйти
-        </button>
-      </form>
-      {% else %}
-      <ul class="nav nav-tabs">
-        <a class="nav-link" href="{% url 'login' %}">Войти</a>
-        <a class="nav-link" href="{% url 'signup' %}">Регистрация</a>
-        {% endif %}
-      </ul>
-    </div>
-  </nav>
-</header>
-
+<html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Профили{% endblock %}</title>
-  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <title>{% block title %}AMICI{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+  <script src="{% static 'js/main.js' %}" defer></script>
+
 </head>
 
 <body>
-  <div class="page">
-    <div class="sidebar">
-      <ul class="nav nav-underline flex-column mb-auto">
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'profiles' %}active{% endif %}"
-            aria-current="{% if request.resolver_match.url_name == 'profiles' %}page{% endif %}"
-            href="{% url 'profiles' %}">Главная</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'my_prof' %}active{% endif %}"
-            aria-current="{% if request.resolver_match.url_name == 'my_prof' %}page{% endif %}" href="/my_prof/">Мой
-            профиль</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'blog' %}active{% endif %}"
-            aria-current="{% if request.resolver_match.url_name == 'blog' %}page{% endif %}" href="/blog/">Новостная лента</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">-</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
-            aria-current="{% if request.resolver_match.url_name == 'about' %}page{% endif %}" href="/about/">О
-            проекте</a>
-        </li>
-      </ul>
-    </div>
-    <main class="container">
-      {% if messages %}
-      <ul class="alert alert-primary">
-        {% for m in messages %}<p class="msg {{ m.tags }}">{{ m }}</p>{% endfor %}
-      </ul>
-      {% endif %}
-      {% block content %}{% endblock %}     
-    </main>
-  </div>
-</body>
 
+<header class="topbar">
+  <nav class="nav-wrapper">
+    <a class="logo" href="/blog/">AMICI</a>
+    <ul class="menu">
+        <a class="menu-link" href="/blog/">Главная</a>
+      
+        <a class="menu-link" href="/my_prof/">Мой профиль</a>
+      
+        <a class="menu-link"   href="{% url 'profiles' %}">Профили</a>
+      
+        <a class="menu-link" href="/about/">О проекте</a>
+
+    </ul>
+    {% if user.is_authenticated %}
+      <div class="user-panel">
+        <!-- <span>Вы вошли как {{ user.username }}</span>-->
+
+        <form action="{% url 'logout' %}" method="post" class="post-form">
+          {% csrf_token %}
+          <button class="logout-btn" type="submit">
+            Выйти
+          </button>
+        </form>
+      </div>
+    {% else %}
+      <div class="auth-links">
+        <a class="menu-link" href="{% url 'login' %}">Войти</a>
+        <a class="menu-link" href="{% url 'signup' %}">Регистрация</a>
+      </div>
+    {% endif %}
+  </nav>
+</header>
+
+<div class="page">
+
+  <main class="content">
+
+    {% if messages %}
+      <div class="messages">
+        {% for m in messages %}
+          <p class="message {{ m.tags }}">{{ m }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+  </main>
+
+</div>
+{% block scripts %}{% endblock %}
+</body>
 </html>

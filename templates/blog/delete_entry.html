@@ -1,30 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
-<nuv class="container-fluid">
 
-    <ul class="nav flex-column">
-        <h1 class="mb-4">Удалить запись?</h1>
-        <p> Ее нельзя будет восстановить </p>
-        <form method="post">
-            {% csrf_token %}
-            
-            <button type="submit" class="btn btn-danger">Удалить</button>
-            <a href="{% url 'blog-detail' object.id %}" class="btn btn-secondary">Отмена</a>
-        </form>
-    </ul>
-</nuv>
+<div class="delete-post-page">
 
-<div class="card mb-4">
-    <div class="card-body">
-        <a  
-        class="nav-link active"> Автор: {{ object.user.profile.fname }} {{ object.user.profile.lname }} </a>
-        <p class="card-text">{{ object.content }}</p>
-        <p class="text-muted"><small>Создано: {{ object.created_at|date:'d.m.Y H:i' }}</small></p>
-        {% if object.image %}
-        <img src="{{ object.image.url }}" class="rounded mx-auto d-block" style="max-height: 500px;"
-            alt="Изображение записи">
-        {% endif %}
-    </div>
+  <h1 class="page-title">Удалить запись?</h1>
+  <p>Её нельзя будет восстановить</p>
+
+  <form method="post" class="delete-form">
+    {% csrf_token %}
+    <button type="submit" class="danger-btn">Удалить</button>
+    <a href="{% url 'blog-detail' object.id %}" class="secondary-btn">Отмена</a>
+  </form>
+
+  <div class="post-preview">
+    <p class="author">
+      Автор: {{ object.user.profile.fname }} {{ object.user.profile.lname }}
+    </p>
+
+    <p class="post-content">{{ object.content }}</p>
+
+    <p class="post-date">
+      Создано: {{ object.created_at|date:'d.m.Y H:i' }}
+    </p>
+
+    {% if object.image %}
+      <div class="post-image">
+        <img src="{{ object.image.url }}" alt="Изображение записи">
+      </div>
+    {% endif %}
+  </div>
+
 </div>
 
 {% endblock %}

@@ -1,16 +1,41 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<h1>Вход</h1>
-{% if form.errors %}<div class="msg error">Неверный логин или пароль</div>{% endif %}
-<form method="post">
-  <div class="row mb-3">
-    {% csrf_token %}
-    <label class="col-sm-2 col-form-label">Логин</label>{{ form.username }}
-    <label class="col-sm-2 col-form-label">Пароль</label>{{ form.password }}
+
+<h1 class="page-title">Вход</h1>
+
+
+
+<form method="post" class="form">
+  {% csrf_token %}
+
+  <div class="form-group">
+    <label>Логин</label>
+    {{ form.username }}
   </div>
-  <div class="row mb-3">
-    <button type="submit" class="btn btn-success">Войти</button>
+
+  <div class="form-group">
+    <label>Пароль</label>
+    {{ form.password }}
   </div>
+  {% if form.errors %}
+  
+  <div class="error-message" style="margin-bottom: 20px;">
+    Неверный логин или пароль
+  </div>
+{% endif %}
+
+  <button type="submit" class="primary-btn" >
+    Войти
+  </button>
+
 </form>
-<p>Нет аккаунта? <a class="btn btn-outline-dark" href="{% url 'signup' %}">Зарегистрируйтесь</a></p>
+
+<div class="auth-switch">
+  <p>
+    Нет аккаунта?
+    <a class="log_sig" href="{% url 'signup' %}">Зарегистрируйтесь</a>
+  </p>
+</div>
+
 {% endblock %}
