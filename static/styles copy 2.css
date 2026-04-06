@@ -1,0 +1,112 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Nunito Light', sans-serif;
+}
+
+a{
+  text-decoration: none;
+  font-family: 'Nunito Light', sans-serif;
+  color: black;
+  color: none;
+} 
+
+.logo{
+    padding: auto;
+    font-size: 24px;
+    color: white;
+    font-family: 'Javanese Text'; 
+}
+
+.topbar {
+  border-bottom: 1px solid #ddd;
+  background-color: #20093D;
+  color: white;
+ 
+}
+
+
+.nav-wrapper {
+  display: flex;
+  padding: 0 10px 0 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn{
+  background:none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 8px;
+  border-radius: 4px;
+}
+.logout-btn:hover{
+  background-color:#39106b;
+}
+
+
+
+.menu-link{
+    color: white;
+    padding: 10px 10px;
+    border-radius: 4px;
+}
+.menu-link:hover{
+background-color:#39106b;
+}
+.menu-link-active{
+background-color:#39106b;
+ color: white;
+    padding: 10px 10px;
+    border-radius: 4px;
+}
+
+.sidebar {
+  width: 250px;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  
+}
+.page-title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.blog-controls {
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-btn {
+  padding: 6px 12px;
+  border: none;
+  background-color: #5cb85c;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-main { 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    border: none; 
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary { background: #39106b; color: white; }
+.btn-outline { background: none; border: 1px solid #39106b; color: #39106b; }

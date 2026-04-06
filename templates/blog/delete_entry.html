@@ -4,32 +4,42 @@
 <div class="delete-post-page">
 
   <h1 class="page-title">Удалить запись?</h1>
-  <p>Её нельзя будет восстановить</p>
+  <h3 class="page-title">Её нельзя будет восстановить</h3>
 
-  <form method="post" class="delete-form">
+  <form method="post" class="delete-form" style="text-align: center;">
     {% csrf_token %}
     <button type="submit" class="danger-btn">Удалить</button>
     <a href="{% url 'blog-detail' object.id %}" class="secondary-btn">Отмена</a>
   </form>
 
-  <div class="post-preview">
-    <p class="author">
-      Автор: {{ object.user.profile.fname }} {{ object.user.profile.lname }}
-    </p>
 
-    <p class="post-content">{{ object.content }}</p>
 
-    <p class="post-date">
-      Создано: {{ object.created_at|date:'d.m.Y H:i' }}
-    </p>
+  <div class="post-card" style="margin-top: 15px; animation: slideInUp 0s forwards;">
+  <div class="post-header">
+    <div class="post-header">
+      {% if object.user.profile.photo %}
+        <img src="{{ object.user.profile.photo.url }}" class="avatar" alt="{{ object.user.profile.fname }} {{ object.user.profile.lname }}">
+      {% else %}
+        <div class="avatar placeholder">{{ object.user.username|slice:":1"|upper }}</div>
+      {% endif %}
 
-    {% if object.image %}
-      <div class="post-image">
-        <img src="{{ object.image.url }}" alt="Изображение записи">
+      <div class="author-info">
+        <a href="{% url 'profiles-detail' object.user.profile.id %}">
+          {{ object.user.profile.fname }} {{ object.user.profile.lname }}
+        </a>
+        <span class="post-date">{{ object.created_at|date:'d.m.Y H:i' }}</span>
       </div>
+</div>
+    </div>
+    <div class="post-content">
+      <p>{{ object.content }}</p>
+    {% if object.image %}
+    <div class="detail-post-image">
+        <img src="{{ object.image.url }}" alt="Изображение записи">
+    </div>
     {% endif %}
-  </div>
-
+</div>
+</div>
 </div>
 
 {% endblock %}

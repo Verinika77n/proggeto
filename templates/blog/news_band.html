@@ -4,25 +4,23 @@
 
 <h1 class="page-title">Новостная лента</h1>
 
-<!-- ПАГИНАЦИЯ (верх) -->
 {% if page_obj.paginator.num_pages > 1 %}
-<div class="pagination-wrapper top">
+<div>
   {% if page_obj.has_previous %}
-    <a class="pagination-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
   {% endif %}
 
-  <span class="pagination-info">
+  <span>
     {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
   </span>
 
   {% if page_obj.has_next %}
-    <a class="pagination-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
   {% endif %}
 </div>
 {% endif %}
 
 
-<!-- ПОИСК -->
 <div class="blog-controls">
   <form method="get" class="search-form">
     <input 
@@ -32,115 +30,52 @@
       placeholder="Поиск по имени/сообщению"
       class="search-input"
     >
-    <button type="submit" class="primary-btn">Искать</button>
+    <button type="submit" class="search-btn">Искать</button>
   </form>
 
-  <a href="{% url 'blog-create' %}" class="success-btn">
+  <a href="{% url 'blog-create' %}" class="btn-primary">
     Добавить запись
   </a>
 </div>
 
 
-<!-- ПОСТЫ -->
-<div class="posts">
-
-{% for e in page_obj %}
-<section id="{{ e.id }}"></section>
-
-<article class="post-card">
-
-  <!-- HEADER -->
-  <div class="post-header">
-    <div class="post-author">
-
-      {% if e.user.profile.photo %}
-        <img 
-          src="{{ e.user.profile.photo.url }}" 
-          class="avatar"
-          alt="{{ e.user.profile.fname }} {{ e.user.profile.lname }}"
-        >
-      {% else %}
-        <div class="avatar placeholder">
-          {{ e.user.username|slice:":1"|upper }}
-        </div>
-      {% endif %}
-
-      <div class="author-info">
-        <a href="{% url 'profiles-detail' e.user.profile.id %}">
-          {{ e.user.profile.fname }} {{ e.user.profile.lname }}
-        </a>
-        <span class="post-date">
-          {{ e.created_at }}
-        </span>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- CONTENT -->
-  <div class="post-content">
-    <a href="{% url 'blog-detail' e.id %}">
-      {{ e.content }}
-    </a>
-  </div>
-
-
-  <!-- IMAGE -->
-  {% if e.image %}
-  <div class="post-image">
-    <img src="{{ e.image.url }}" alt="Изображение записи">
-  </div>
-  {% endif %}
-
-
-  <!-- LIKE -->
-  <div class="post-actions">
-    <form method="post" action="{% url 'blog' %}">
-      {% csrf_token %}
-      <input type="hidden" name="e_id" value="{{ e.id }}">
-
-      <button type="submit" class="like-btn">
-        {% if e|is_liked_by:user %}
-            ❤️
-        {% else %}
-            🤍
-        {% endif %}
-        {{ e.likes_count }}
-      </button>
-    </form>
-  </div>
-
-
-  <!-- COMMENTS -->
-  <div class="post-footer">
-    <a href="{% url 'blog-detail' e.id %}#comments-section">
-      Комментарии ({{ e.comments.count }})
-    </a>
-  </div>
-
-</article>
-
-{% empty %}
-<p>Записей нет.</p>
-{% endfor %}
-
+<div class="post-card">
+  {% for e in page_obj %}
+  <section id="{{ e.id }}"></section>
+    <user-post
+      post-id="{{ e.id }}"
+      author-name="{{ e.user.profile.fname }} {{ e.user.profile.lname }}"
+      author-url="{% if e.user == user %}/my_prof/{% else %}{% url 'profiles-detail' e.user.profile.id %}{% endif %}"
+      author-photo="{% if e.user.profile.photo %}{{ e.user.profile.photo.url }}{% endif %}"
+      author-initial="{{ e.user.username|slice:":1"|upper }}"
+      created-at="{{ e.created_at|date:'d.m.Y H:i' }}"
+      content="{{ e.content|truncatewords:30 }}"
+      post-url="{% url 'blog-detail' e.id %}"
+      post-image="{% if e.image %}{{ e.image.url }}{% endif %}"
+      likes-count="{{ e.likes_count }}"
+      is-liked="{% if e|is_liked_by:user %}true{% else %}false{% endif %}"
+      comments-count="{{ e.comments.count }}"
+      csrf-token="{{ csrf_token }}"
+      action-url="{% url 'blog' %}"
+    ></user-post>
+  {% empty %}
+    <p>Записей нет.</p>
+  {% endfor %}
 </div>
 
 
-<!-- ПАГИНАЦИЯ (низ) -->
 {% if page_obj.paginator.num_pages > 1 %}
-<div class="pagination-wrapper bottom">
+<div>
   {% if page_obj.has_previous %}
-    <a class="pagination-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
   {% endif %}
 
-  <span class="pagination-info">
+  <span>
     {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
   </span>
 
   {% if page_obj.has_next %}
-    <a class="pagination-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
   {% endif %}
 </div>
 {% endif %}

@@ -6,66 +6,45 @@
   {% if user.is_authenticated and user.profile %}
     <h1 class="page-title">Профили</h1>
 
-    <!-- ПАГИНАЦИЯ -->
+    
     {% if page_obj.paginator.num_pages > 1 %}
-      <div class="pagination">
+      <div>
         {% if page_obj.has_previous %}
-          <a href="?q={{ q }}&page={{ page_obj.previous_page_number }}" class="page-link">« Назад</a>
+          <a href="?q={{ q }}&page={{ page_obj.previous_page_number }}" class="btn-main">« Назад</a>
         {% endif %}
         <span class="current-page">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
         {% if page_obj.has_next %}
-          <a href="?q={{ q }}&page={{ page_obj.next_page_number }}" class="page-link">Вперёд »</a>
+          <a href="?q={{ q }}&page={{ page_obj.next_page_number }}" class="btn-main">Вперёд »</a>
         {% endif %}
       </div>
     {% endif %}
 
-    <!-- Поиск -->
     <form method="get" class="search-form">
       <input type="text" name="q" value="{{ q }}" placeholder="Поиск по имени/сообщению">
       <button type="submit" class="search-btn">Искать</button>
     </form>
 
-    <!-- Список профилей -->
+  
     <div class="profiles-list">
-      {% for e in page_obj %}
-      <div class="profile-card">
-        <div class="avatar-wrapper">
-          {% if e.photo %}
-            <img src="{{ e.photo.url }}" alt="{{ e.fname }} {{ e.lname }}" class="avatar">
-          {% else %}
-            <div class="avatar placeholder">{{ e.user.username|slice:":1"|upper }}</div>
-          {% endif %}
-        </div>
-
-        <div class="profile-info">
-          <h3 class="profile-name">
-            {% if e.user == user %}
-              <a href="/my_prof/">{{ e.fname }} {{ e.lname }}</a>
-            {% else %}
-              <a href="{% url 'profiles-detail' e.id %}">{{ e.fname }} {{ e.lname }}</a>
-            {% endif %}
-          </h3>
-
-          {% if e.about %}
-            <p class="profile-about">{{ e.about }}</p>
-          {% endif %}
-
-          {% if e.user %}
-            <p class="profile-nickname">ник: {{ e.user.username }}</p>
-          {% endif %}
-
-          <p class="profile-date">Регистрация: {{ e.created_at|date:'d.m.Y' }}</p>
-        </div>
-      </div>
-      {% empty %}
-      <p>Нет информации</p>
-      {% endfor %}
-    </div>
+  {% for e in page_obj %}
+    <profile-card 
+      fname="{{ e.fname }}" 
+      lname="{{ e.lname }}" 
+      photo="{% if e.photo %}{{ e.photo.url }}{% endif %}"
+      about="{{ e.about|default:'' }}"
+      date="{{ e.created_at|date:'d.m.Y' }}"
+      url="{% if e.user == user %}/my_prof/{% else %}{% url 'profiles-detail' e.id %}{% endif %}"
+    ></profile-card>
+  {% empty %}
+    <p>Нет информации</p>
+  {% endfor %}
+</div>
 
   {% else %}
-    <div class="alert-warning">
-      У вас нет профиля. Пожалуйста, создайте его 
-      <a href="{% url 'profiles-create' %}" class="create-profile-link">Создать профиль</a>.
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
+      <p style="margin: 5px;">Вы не можете просматривать профили, так как не заполнили свой профиль. </p>
+      <p style="margin: 5px;">Пожалуйста, заполните свой профиль, чтобы получить доступ к другим профилям.</p>
+      <a href="{% url 'profiles-create' %}" class="vhod-v-sistemy">Создать профиль</a>
     </div>
   {% endif %}
 

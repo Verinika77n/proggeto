@@ -2,115 +2,103 @@
 {% block content %}
 {% load blog_filters %}
 
-<div class="profile-page">
-
-  <!-- Назад -->
-  <div class="back-link">
-    <a href="{% url 'profiles' %}" class="secondary-btn">← Назад</a>
+<div class="back-link" style="margin-bottom: 10px;">
+    <a href="{{ request.META.HTTP_REFERER }}" class="secondary-btn">← Назад</a>
   </div>
+<div class="profile-card">
 
-  <h1 class="page-title text-center">Мой профиль</h1>
-
+  
   {% if user.is_authenticated %}
     {% if entry and user.profile %}
 
-    <div class="profile-info">
+     <div style="text-align: left;" >
+            <a href="{% url 'profiles-edit' entry.pk %}" class="primary-btn">Редактировать</a>
+            <a href="{% url 'profiles-delete' entry.pk %}" class="danger-btn">Удалить профиль</a> 
+          </div>
+         
 
-      <div class="profile-header">
+<div class="profile-info">
+          
 
-        <div class="avatar-wrapper">
+<div class="profile-content" >
+
+        <div class="avatar" style="margin-top: 15px;min-height: 190px; min-width: 190px; ">
           {% if entry.photo %}
-            <img src="{{ entry.photo.url }}" class="avatar" alt="{{ entry.fname }} {{ entry.lname }}">
+            <img src="{{ entry.photo.url }}" class="avatar" style="min-height: 190px; min-width: 190px;" alt="{{ entry.fname }} {{ entry.lname }}">
           {% else %}
-            <div class="avatar placeholder">{{ user.username|slice:":1"|upper }}</div>
+            <div class="avatar placeholder" style="min-height: 190px; min-width: 190px;  font-size:48px">{{ user.username|slice:":1"|upper }}</div>
           {% endif %}
         </div>
 
-        <div class="profile-details">
-          <h2>
+        <div class="profile-info">
+         
+          <ul class="profile-details">
+
+          <li><h2 style="margin-top: 15px; text-align: center;">
             {% if entry.fname or entry.lname %}
               {{ entry.fname }} {{ entry.lname }}
             {% else %}
               Без имени
             {% endif %}
-          </h2>
-          <p class="nickname"><strong>Ник:</strong> {{ user.username }}</p>
-
-          <ul class="profile-data">
+          </h2><p class="post-date" style="text-align: center;">{{ user.username }}</p></li>
             {% if entry.phone %}<li><strong>Телефон:</strong> {{ entry.phone }}</li>{% endif %}
-            {% if entry.birth_date %}<li><strong>Дата рождения:</strong> {{ entry.birth_date|date:"d.m.Y" }} | <strong>Возраст:</strong> {{ entry.get_age }}</li>{% endif %}
+            {% if entry.birth_date %}<li><strong>День рождения:</strong> {{ entry.birth_date|date:"d.m.Y" }} ({{ entry.get_age }} лет)</li>{% endif %}
             {% if entry.gender %}<li><strong>Пол:</strong> {{ entry.gender }}</li>{% endif %}
-            {% if entry.about %}<li><strong>О себе:</strong> {{ entry.about }}</li>{% else %}<li><strong>О себе:</strong> Пользователь ничего о себе не рассказал</li>{% endif %}
-          </ul>
+            {% if entry.about %}<li style="font-size: 18px; margin-top: 10px; margin-bottom: 15px;">{{ entry.about }}</li>{% else %}<li><strong>О себе:</strong> Пользователь ничего о себе не рассказал</li>{% endif %}
+         
+          <p class="post-date" style="text-align: right;">
+          Дата регистрации: {{ entry.created_at|date:'d.m.Y' }}</p>
 
           {% if not entry.phone and not entry.birth_date and not entry.gender and not entry.about and not entry.photo %}
-            <div class="alert-info">У вас уже есть профиль, но данные ещё не заполнены.</div>
+            <div class="alert-info text-center" style="margin-top: 15px;">
+              Вы не заполнили данные профиля. <a href="{% url 'profiles-edit' entry.pk %}" class="primary-btn">Заполнить профиль</a>
+            </div>
           {% endif %}
 
-          <div class="profile-actions">
-            <a href="{% url 'profiles-edit' entry.pk %}" class="primary-btn">Редактировать</a>
-            <a href="{% url 'blog-create' %}" class="success-btn">Добавить запись в блог</a>
-            <a href="{% url 'profiles-delete' entry.pk %}" class="danger-btn">Удалить профиль</a>
-          </div>
-
-          <p class="created-at">Создано: {{ entry.created_at|date:"d.m.Y" }}</p>
-
+        </ul>
         </div>
       </div>
+      <a href="{% url 'blog-create' %}" class="success-btn" style="text-align: center; margin-bottom: 5px;">Добавить запись в блог</a>
 
-      <!-- Мои записи -->
-      <h3>Мои записи</h3>
-      <div class="user-posts">
+      </div>
+          </div>
+
+      <div class="post-card">
         {% for e in user.blog.all %}
-        <div class="post-card">
 
-          <div class="post-header">
-            <a href="{% url 'profiles-detail' e.user.profile.id %}" class="author-link">Автор: {{ e.user.profile.fname }} {{ e.user.profile.lname }}</a>
-            <span class="post-date">Создано: {{ e.created_at }}</span>
-          </div>
+<user-post
+      post-id="{{ e.id }}"
+      author-name="{{ e.user.profile.fname }} {{ e.user.profile.lname }}"
+      author-url="{% if entry.user == user %}/my_prof/{% else %}{% url 'profiles-detail' entry.user.profile.id %}{% endif %}"
+      author-photo="{% if e.user.profile.photo %}{{ e.user.profile.photo.url }}{% endif %}"
+      author-initial="{{ e.user.username|slice:":1"|upper }}"
+      created-at="{{ e.created_at|date:'d.m.Y H:i' }}"
+      content="{{ e.content|truncatewords:30 }}"
+      post-url="{% url 'blog-detail' e.id %}"
+      post-image="{% if e.image %}{{ e.image.url }}{% endif %}"
+      likes-count="{{ e.likes_count }}"
+      is-liked="{% if e|is_liked_by:user %}true{% else %}false{% endif %}"
+      comments-count="{{ e.comments.count }}"
+      csrf-token="{{ csrf_token }}"
+      action-url="{% url 'blog' %}"
+    ></user-post>
 
-          <div class="post-content">
-            <a href="{% url 'blog-detail' e.id %}">{{ e.content }}</a>
-          </div>
 
-          {% if e.image %}
-          <div class="post-image">
-            <img src="{{ e.image.url }}" alt="Изображение записи">
-          </div>
-          {% endif %}
 
-          <div class="post-like">
-            <form method="post" action="{% url 'blog' %}">
-              {% csrf_token %}
-              <input type="hidden" name="e_id" value="{{ e.id }}">
-              <button type="submit" class="like-btn">
-                {% if e|is_liked_by:user %}❤️{% else %}🤍{% endif %}
-                {{ e.likes_count }}
-              </button>
-            </form>
-          </div>
-
-          <div class="post-comments-link">
-            <a href="{% url 'blog-detail' e.id %}#comments-section">Комментарии ({{ e.comments.count }})</a>
-          </div>
-
-        </div>
         {% empty %}
         <p>У вас пока нет записей в блоге.</p>
         {% endfor %}
       </div>
 
-    </div>
 
     {% else %}
-      <div class="alert-warning text-center">
+      <div >
         У вас пока нет данных профиля.
-      </div>
-      <div class="text-center mt-3">
-        <a href="{% url 'profiles-create' %}" class="success-btn">Заполнить профиль</a>
+     
+        <a href="{% url 'profiles-create' %}" class="vhod-v-sistemy">Заполнить профиль</a>
       </div>
     {% endif %}
   {% endif %}
 
-</div>
+
 {% endblock %}

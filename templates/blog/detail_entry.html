@@ -4,27 +4,13 @@
 
 <div class="blog-detail">
 
-  <!-- Назад -->
-  <div class="back-link">
-    <a href="/blog/#{{ entry.id }}" class="secondary-btn">← Назад</a>
+  
+  <div class="back-link" >
+    <a href="/blog/#{{ entry.id }}" class="secondary-btn" style="margin-bottom: 15px;">← Назад</a>
   </div>
 
-  <div class="detail-header">
-    <h1 class="page-title">Детали поста</h1>
-
-    {% if user.is_authenticated %}
-      {% if entry.user == user or user.is_staff %}
-      <div class="post-actions">
-        <a href="{% url 'blog-edit' entry.id %}" class="primary-btn">Изменить</a>
-        <a href="{% url 'blog-delete' entry.id %}" class="danger-btn">Удалить</a>
-      </div>
-      {% endif %}
-    {% endif %}
-  </div>
-
-  <!-- Пост -->
-  <article class="post-card">
-
+  <div class="post-card" style="animation: slideInUp 0s forwards">
+  <div class="post-header">
     <div class="post-header">
       {% if entry.user.profile.photo %}
         <img src="{{ entry.user.profile.photo.url }}" class="avatar" alt="{{ entry.user.profile.fname }} {{ entry.user.profile.lname }}">
@@ -38,52 +24,74 @@
         </a>
         <span class="post-date">{{ entry.created_at|date:'d.m.Y H:i' }}</span>
       </div>
+</div>
+    {% if user.is_authenticated %}
+      {% if entry.user == user or user.is_staff %}
+      <div>
+        <a href="{% url 'blog-edit' entry.id %}" class="primary-btn">Изменить</a>
+        <a href="{% url 'blog-delete' entry.id %}" class="danger-btn">Удалить</a>
+      </div>
+      {% endif %}
+    {% endif %}
+
     </div>
 
     <div class="post-content">
       <p>{{ entry.content }}</p>
 
-      {% if entry.image %}
-        <div class="post-image">
-          <img src="{{ entry.image.url }}" alt="Изображение записи">
-        </div>
-      {% endif %}
+ 
+    {% if entry.image %}
+    <div class="post-image">
+        <img src="{{ entry.image.url }}" alt="Изображение записи">
     </div>
+    {% endif %}
 
-    <!-- Лайк -->
-    <div class="post-like">
-      <form method="post" action="{% url 'blog-detail' entry.id %}">
-        {% csrf_token %}
-        <input type="hidden" name="e_id" value="{{ entry.id }}">
-        <button type="submit" name="form_type" value="form1" class="like-btn">
-          {% if entry|is_liked_by:user %}❤️{% else %}🤍{% endif %}
-          {{ entry.likes_count }}
-        </button>
-      </form>
+    <div >
+        <form method="post" action="{% url 'blog-detail' entry.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="e_id" value="{{ entry.id }}">
+            <button type="submit" name="form_type" value="form1" class="like-btn">
+                <span class="heart">{% if entry|is_liked_by:user %}❤️{% else %}🤍{% endif %}</span>
+                <span class="count">{{ entry.likes_count }}</span>
+            </button>
+        </form>
     </div>
-
+</div>
+    </div>
   </article>
+ <h3 class="page-title">Комментарии</h3>
+  <section id="comments-section" class="comment-card">
 
-  <!-- Комментарии -->
-  <section id="comments-section" class="comments">
-    <h3>Комментарии</h3>
+   {% if user.is_authenticated %}
+      <div class="form-group">
+        <h3>Добавить комментарий</h3>
+        <form method="post" action="{% url 'blog-detail' entry.id %}">
+          {% csrf_token %}
+          <textarea name="comment_text" rows="3" required class="input"></textarea>
+          <button type="submit" name="form_type" value="form2" class="primary-btn">Отправить</button>
+        </form>
+      </div>
+    {% else %}
+      <p class="page-title">Чтобы оставить комментарий, пожалуйста, <a class="vhod-v-sistemy" href="{% url 'login' %}">войдите в систему</a></p>
+    {% endif %}
 
     {% for comment in entry.comments %}
       <div class="comment-card">
+          <div style="display: flex; flex-direction: row; justify-content: space-between;">
 
-        {% if comment.user.profile.photo %}
-          <img src="{{ comment.user.profile.photo.url }}" class="avatar" alt="{{ comment.user.profile.fname }} {{ comment.user.profile.lname }}">
+          <div style="display: flex; align-items: center; justify-items: left; gap: 10px; margin-bottom: 10px; ">
+
+            {% if comment.user.profile.photo %}
+          <img src="{{ comment.user.profile.photo.url }}" class="avatar" style="max-width: 30px; max-height: 30px;" alt="{{ comment.user.profile.fname }} {{ comment.user.profile.lname }}">
         {% else %}
-          <div class="avatar placeholder">{{ comment.user.username|slice:":1"|upper }}</div>
+          <div class="avatar placeholder" style="max-width: 30px; max-height: 30px; font-size: 12px;">{{ comment.user.username|slice:":1"|upper }}</div>
         {% endif %}
 
-        <div class="comment-info">
-          <a href="{% url 'profiles-detail' comment.user.profile.id %}">
+          <a href="{% url 'profiles-detail' comment.user.profile.id %}" style="font-size: 14px;">
             {{ comment.user.profile.fname }} {{ comment.user.profile.lname }}
           </a>
           <span class="comment-date">{{ comment.timestamp|date:'d.m.Y H:i' }}</span>
-
-          <p class="comment-text">{{ comment.comment }}</p>
+          </div>
 
           {% if comment.user == user or user.is_staff %}
           <form method="post" action="{% url 'blog-detail' entry.id %}" class="delete-comment-form">
@@ -93,25 +101,17 @@
           </form>
           {% endif %}
 
-        </div>
+          </div>
+       
+
+          <p class="comment-text" >{{ comment.comment }}</p>
+
       </div>
     {% empty %}
       <p>Комментариев нет.</p>
     {% endfor %}
 
-    {% if user.is_authenticated %}
-      <div class="add-comment">
-        <h5>Добавить комментарий</h5>
-        <form method="post" action="{% url 'blog-detail' entry.id %}">
-          {% csrf_token %}
-          <textarea name="comment_text" rows="3" required class="input"></textarea>
-          <button type="submit" name="form_type" value="form2" class="primary-btn">Отправить</button>
-        </form>
-      </div>
-    {% else %}
-      <p>Чтобы оставить комментарий, пожалуйста, <a href="{% url 'login' %}">войдите в систему</a>.</p>
-    {% endif %}
-
+   
   </section>
 
 </div>

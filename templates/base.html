@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}AMICI{% endblock %}</title>
 
   <link rel="stylesheet" href="{% static 'styles.css' %}">
@@ -17,23 +17,22 @@
 <header class="topbar">
   <nav class="nav-wrapper">
     <a class="logo" href="/blog/">AMICI</a>
-    <ul class="menu">
-        <a class="menu-link" href="/blog/">Главная</a>
+    <ul>
       
-        <a class="menu-link" href="/my_prof/">Мой профиль</a>
-      
-        <a class="menu-link"   href="{% url 'profiles' %}">Профили</a>
-      
-        <a class="menu-link" href="/about/">О проекте</a>
-
-    </ul>
+    <a class="menu-link{% if request.path == '/blog/' %}-active{% endif %}" href="/blog/">Главная</a>
+    
+    <a class="menu-link{% if request.path == '/my_prof/' %}-active{% endif %}" href="/my_prof/">Мой профиль</a>
+    
+    {% url 'profiles' as profiles_url %}
+    <a class="menu-link{% if request.path == profiles_url %}-active{% endif %}" href="{{ profiles_url }}">Профили</a>
+    
+    <a class="menu-link{% if request.path == '/about/' %}-active{% endif %}" href="/about/">О проекте</a>
+</ul>
     {% if user.is_authenticated %}
-      <div class="user-panel">
-        <!-- <span>Вы вошли как {{ user.username }}</span>-->
-
-        <form action="{% url 'logout' %}" method="post" class="post-form">
+      <div>
+        <form action="{% url 'logout' %}" method="post">
           {% csrf_token %}
-          <button class="logout-btn" type="submit">
+          <button class="logout-btn" type="submit" >
             Выйти
           </button>
         </form>
@@ -52,9 +51,9 @@
   <main class="content">
 
     {% if messages %}
-      <div class="messages">
+      <div>
         {% for m in messages %}
-          <p class="message {{ m.tags }}">{{ m }}</p>
+          <p class="alert-info {{ m.tags }}">{{ m }}</p>
         {% endfor %}
       </div>
     {% endif %}

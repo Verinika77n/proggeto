@@ -65,7 +65,7 @@
           {% if object.user == user or user.is_staff %}
             <a href="/my_prof/" class="btn-cancel">Отмена</a>
           {% else %}
-            <a href="{% if object %}{% url 'profiles-detail' object.id %}{% else %}{% url 'profiles' %}{% endif %}" class="btn-cancel">Отмена</a>
+            <a href="{% if object %}/my_prof/{% else %}{% url 'profiles' %}{% endif %}" class="btn-cancel">Отмена</a>
           {% endif %}
         {% endif %}
       {% endif %}

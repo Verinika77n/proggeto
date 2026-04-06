@@ -94,7 +94,7 @@ class BlogDetailView(DetailView):
         entry = get_object_or_404(BlogEntry, pk=self.kwargs['pk'])
         form_type = request.POST.get("form_type")
 
-        if form_type == "form1":  # лайк
+        if form_type == "form1": 
             activity = BlogActivity.objects.filter(
                 blog_entry=entry, user=request.user, action='like'
             ).first()

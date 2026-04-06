@@ -1,467 +1,384 @@
-/* Сброс */
+/* ============================================================
+   1. ГЛОБАЛЬНЫЕ НАСТРОЙКИ (СБРОС И БАЗА)
+   ============================================================ */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Nunito Light', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito Light', sans-serif;
 }
 
 body {
-  font-family: 'Nunito Light', sans-serif;
- min-width: 320px;
- 
-}
-a{
-  text-decoration: none;
-  font-family: 'Nunito Light', sans-serif;
-  color: black;
-  color: none;
-}  
-.logout-btn{
-
-  background:none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
+    min-width:425px;
+    background-color: #f9f9f9;
+    color: #333;
 }
 
-
-.logo{
-    padding: auto;
-    font-size: 24px;
-    color: white;
-    font-family: 'Javanese Text';
-    position: relative;
-    
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-.menu-link{
-    color: white;
-    padding: 8px 8px;
-    border-radius: 4px;
+a:hover {
+    transition: color 0.3s;
 }
-.menu{
-    display: flex;
-    gap: 15px;
-}
-.auth-links{
-    
-    gap: 15px;
-}
-/* Шапка */
+/* ============================================================
+   2. ШАПКА (TOPBAR) И ЛОГОТИП
+   ============================================================ */
 .topbar {
-  
-  border-bottom: 1px solid #ddd;
-  background-color: #20093D;
-  color: white;
+    background-color: #20093D;
+    color: white;
+    border-bottom: 1px solid #ddd;
 }
 
 .nav-wrapper {
-  display: flex;
-  padding: 0 10px 0 15px;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    padding: 10px 20px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Макет */
+.logo {
+    font-size: 24px;
+    color: white;
+    font-family: 'Javanese Text', serif;
+}
+
+/* ============================================================
+   3. НАВИГАЦИЯ (МЕНЮ И ССЫЛКИ В ШАПКЕ)
+   ============================================================ */
+.menu {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+}
+
+.menu-link, .logout-btn {
+    color: white;
+    padding: 10px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+}
+
+/* Состояния наведения и активности */
+.menu-link:hover, 
+.logout-btn:hover {
+    background-color: #39106b;
+    color: white;
+}
+
+.menu-link-active {
+color: white;
+    padding: 10px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+background-color: #39106b;
+
+}
+/* ============================================================
+   4. СТРУКТУРА СТРАНИЦЫ (SIDEBAR И КОНТЕНТ)
+   ============================================================ */
 .page {
-  display: flex;
-  min-height: 100vh;
+    display: flex;
+    min-height: 100vh;
+
 }
 
 .sidebar {
-  width: 250px;
-  padding: 20px;
-  border-right: 1px solid #ddd;
+    width: 250px;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    background: white;
 }
 
 .content {
-  flex: 1;
-  padding: 30px;
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;  /* Располагает дочерние элементы вертикально */
+    
+    align-items: center;      /* Центрирует по горизонтали */
 }
 
-/* Кнопки */
-.primary-btn,
-.success-btn,
-.danger-btn,
-.secondary-btn,
-.like-btn {
-  padding: 13px 30px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  border-radius: 10px;
+@media (max-width: 600px) {
+    .content {
+        padding: 10px;
+    }
 }
 
-.primary-btn { background: #0275d8; color: white;  }
-.success-btn { background: #5cb85c; color: white; }
-.danger-btn { background: #d9534f; color: white; }
-.secondary-btn { background: #6c757d; color: white; }
-.like-btn {
-  background: none;
-  font-size: 16px;
-}
-
-
-.error-message {
-color: crimson;
-font-size: 12px;
-background-color: rgba(255, 0, 0, 0.1);
-border-radius: 10px;
-padding: 10px;
-}
-.errorlist{
-color: crimson;
-font-size: 12px;
-background-color: rgba(255, 0, 0, 0.1);
-border-radius: 10px;
-padding: 10px;
-list-style-type: none;
-margin-top: 10px;
-
-}
-
-
-.log_sig{
-  color: #0275d8;
-  font-weight: 500;
-}
-
-
-
-/* Формы */
-.form,
-.post-form,
-.profile-form-page,
-.delete-post-page,
-.profile-delete-page {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.auth-switch {
-  text-align: center;
-  margin-top: 15px;
-}
-
-
-.form-group,
-.profile-form .form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-}
-
-.form-group label,
-.profile-form label {
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group input[type="text"],
-.form-group input[type="file"],
-.profile-form input[type="text"],
-.profile-form input[type="date"],
-.profile-form input[type="file"],
-.profile-form textarea,
-.input,
-.search-form input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #333;
-}
-
-.form-group textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.form-actions,
-.delete-form .form-actions,
-.profile-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/* Заголовки */
 .page-title {
-  margin-bottom: 20px;
-  text-align: center;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: bold;
 }
 
-/* Блог и карточки */
-.blog-controls {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
+/* ============================================================
+   5. КАРТОЧКИ (ПОСТЫ, ПРОФИЛИ, КОММЕНТАРИИ)
+   ============================================================ */
+.post-card, .profile-card, .comment-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02); 
+    word-break: break-word;
+    max-width: 1000px;
+    min-width: 1000px;
+   
 }
 
-.search-form {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+@keyframes slideInUp {
+    from {
+        opacity: 0; 
+        transform: translateY(70px);
+    }
+    to {
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+.comment-card, .post-card, .profile-card
+{
+  opacity: 0;
+  animation: slideInUp 0.6s ease-out 0.1s forwards;
+
 }
 
-.search-btn {
-  padding: 6px 12px;
-  border: none;
-  background-color: #5cb85c;
-  color: white;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.post-card,
-.post-preview,
-.user-posts .post-card,
-.profile-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px 20px;
-  margin-bottom: 20px;
-}
-
-.post-header,
-.post-card .post-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 12px;
 }
 
 .post-content p {
-  margin: 10px 0;
+    margin: 10px 0;
+    line-height: 1.6;
 }
 
-.post-image img,
-.profile-photo img {
-  width: 100%;
-  max-height: 500px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin-top: 10px;
-}
-
-.post-like,
-.post-comments-link,
-.add-comment,
-.delete-comment-form {
-  margin-top: 10px;
-}
-
-.comment-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 15px;
-}
-
-.comment-info {
-  flex: 1;
-}
-
-.comment-date {
-  font-size: 12px;
-  color: gray;
-}
-
-.comment-text {
-  margin-top: 5px;
-}
-
-/* Аватары */
-.avatar,
-.avatar-wrapper {
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.avatar {
-  width: 70px;
-  height: 70px;
-}
-
-.avatar.placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: gray;
-  color: white;
-  font-size: 28px;
-}
-
-.avatar-wrapper {
-  flex-shrink: 0;
-  margin-bottom: 10px;
-}
-
-.profile-placeholder {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: #888;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-}
-
-/* Автор и инфо */
-.author-info,
-.profile-details {
-  display: flex;
-  flex-direction: column;
+.post-image img, .profile-photo img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 10px 0;
 }
 
 .post-date,
-.post-preview .post-date,
+.post-preview,
 .comment-date {
   font-size: 14px;
   color: gray;
 }
 
-/* Страницы профилей */
-.profile-page,
-.profiles-page,
-.profile-details-page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
-.profile-header {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  margin-bottom: 25px;
+.profile-details{
+    list-style: none;
+
 }
 
-.nickname,
-.profile-name,
-.profile-meta,
-.profile-about,
-.profile-nickname,
-.profile-date {
-  color: #555;
+/* ============================================================
+   6. АВАТАРЫ
+   ============================================================ */
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #eee;
+    flex-shrink: 0;
 }
 
-.profile-name a {
-  font-size: 18px;
-  font-weight: 500;
-  color: #0275d8;
-  text-decoration: none;
+.avatar.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #58525f;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
 }
 
-.profile-info-list {
-  list-style: none;
-  padding: 0;
-  font-size: 18px;
+/* ============================================================
+   7. КНОПКИ И УПРАВЛЕНИЕ (UI-KIT)
+   ============================================================ */
+
+/* Основные кнопки */
+.btn-main, .search-btn,
+.primary-btn, .success-btn, 
+.danger-btn, .secondary-btn, 
+.btn-outline,.btn-primary {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 14px;
+}
+.btn-main:hover{
+transform: scale(1.05);
+  transition: transform 0.2s;
 }
 
-.profile-info-list li {
-  margin-bottom: 10px;
+
+.btn-primary, .primary-btn { background: #39106b; color: white; }
+.btn-primary:hover, .primary-btn:hover { background: #2e0a5c; transform: scale(1.05); transition: transform 0.2s;}
+.success-btn, .search-btn { background-color: #5cb85c; color: white; }
+.success-btn:hover, .search-btn:hover { background-color: #4cae4c; transform: scale(1.05); transition: transform 0.2s;}
+
+.danger-btn { 
+background: #d9534f; 
+color: white; 
+transition: background 0.3s;
+  transition: transform 0.2s;
+}
+.danger-btn:hover {
+  background: #c9302c;
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+.secondary-btn { background: #6c757d; color: white; }
+.secondary-btn:hover { background: #5a6268; transform: scale(1.05);
+  transition: transform 0.2s;}
+
+.btn-outline { 
+    background: none; 
+    border: 1px solid #39106b; 
+    color: #39106b; 
+}
+.btn-outline:hover { 
+    background: #39106b; 
+    color: white; 
+    transform: scale(1.05);
+    transition: transform 0.2s;
 }
 
-/* Предупреждения */
-.alert-info,
-.alert-warning {
-  padding: 10px;
-  margin-bottom: 15px;
-  border-left: 4px solid;
+/* Кнопка лайка */
+.like-btn {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+.like-btn:hover { background: #f0f0f0; transform: scale(1.05); }
+
+/* ============================================================
+   8. ФОРМЫ (ПОЛЯ ВВОДА)
+   ============================================================ */
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+input[type="text"], 
+input[type="password"], 
+input[type="date"], 
+input[type="file"], 
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+textarea {
+  min-width: 300px;
+  max-width: 1024px;
+  min-height: 100px;
+  max-height: 125px;
+}
+
+textarea:hover, input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="date"]:hover,
+input[type="file"]:hover {
+    border-color: #39106b;
+    transition: 0.2s;
+    transform: scale(1.004);
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #39106b;
+    transition: 0.2s;
+    transform: scale(1.004);
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    min-width: 900px;
+}
+
+.blog-controls {
+    display: block;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   9. ОШИБКИ И УВЕДОМЛЕНИЯ
+   ============================================================ */
+.errorlist, .error-message {
+    color: crimson;
+    background-color: rgba(217, 83, 79, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    list-style: none;
+    margin: 10px 0;
+    font-size: 14px;
 }
 
 .alert-info {
-  background: #e7f3fe;
-  border-left-color: #2196F3;
+    background: #e7f3fe;
+    border-left: 4px solid #2196F3;
+    padding: 10px;
+    margin-bottom: 15px;
 }
 
-.alert-warning {
-  background: #fff3cd;
-  border-left-color: #ffc107;
-  text-align: center;
+.vhod-v-sistemy {
+    background: #e7f3fe;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    transition: background 0.3s;
 }
 
-/* Пагинация */
-.pagination,
-.pagination-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.page-link {
-  padding: 5px 10px;
-  background: #0275d8;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-}
-
-.current-page {
-  padding: 5px 10px;
-  color: #555;
-}
-
-/* Создание/редактирование/удаление профиля */
-.btn-save {
-  padding: 8px 16px;
-  background-color: #5cb85c;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.btn-cancel {
-  padding: 8px 16px;
-  text-decoration: none;
-  background-color: #e0e0e0;
-  color: #333;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-edit {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.btn-delete {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-delete:hover {
-  background-color: #d32f2f;
-}
-
-.warning-text {
-  color: crimson;
-  font-size: 16px;
-  margin-bottom: 20px;
+.vhod-v-sistemy:hover {
+    background: #d0e7fd;
 }

@@ -8,7 +8,7 @@
 
 {% if user.is_authenticated %}
 
-<form method="post" enctype="multipart/form-data" class="form post-form">
+<form method="post" enctype="multipart/form-data" >
   {% csrf_token %}
 
   {{ form.non_field_errors }}
@@ -26,11 +26,11 @@
   </div>
 
   <div class="form-actions">
-    <button type="submit" class="primary-btn">
+    <button type="submit" class="success-btn">
       Сохранить
     </button>
 
-    <a href="/blog/" class="secondary-btn">
+    <a href="{{ request.META.HTTP_REFERER }}" class="secondary-btn">
       Отмена
     </a>
   </div>
