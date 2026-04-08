@@ -2,19 +2,20 @@
 {% block content %}
 
 
+<div class="all-posts"> 
 
   {% if user.is_authenticated and user.profile %}
     <h1 class="page-title">Профили</h1>
 
     
     {% if page_obj.paginator.num_pages > 1 %}
-      <div>
+      <div class="pagination-wrapper">
         {% if page_obj.has_previous %}
-          <a href="?q={{ q }}&page={{ page_obj.previous_page_number }}" class="btn-main">« Назад</a>
+          <a href="?q={{ q }}&page={{ page_obj.previous_page_number }}" class="btn-main"><i class="fas fa-chevron-left"></i></a>
         {% endif %}
-        <span class="current-page">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        <span class="pagination-info">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
         {% if page_obj.has_next %}
-          <a href="?q={{ q }}&page={{ page_obj.next_page_number }}" class="btn-main">Вперёд »</a>
+          <a href="?q={{ q }}&page={{ page_obj.next_page_number }}" class="btn-main"><i class="fas fa-chevron-right"></i></a>
         {% endif %}
       </div>
     {% endif %}
@@ -48,5 +49,5 @@
     </div>
   {% endif %}
 
-
+</div>
 {% endblock %}

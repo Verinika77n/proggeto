@@ -2,21 +2,21 @@
 {% load blog_filters %}
 {% block content %}
 
-<div>
+<div class="all-posts">
 <h1 class="page-title">Новостная лента</h1>
 
 {% if page_obj.paginator.num_pages > 1 %}
-<div>
+<div class="pagination-wrapper" >
   {% if page_obj.has_previous %}
-    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.previous_page_number }}"><i class="fas fa-chevron-left"></i></a>
   {% endif %}
 
-  <span>
+  <span class="pagination-info">
     {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
   </span>
 
   {% if page_obj.has_next %}
-    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
   {% endif %}
 </div>
 {% endif %}
@@ -68,15 +68,15 @@
 {% if page_obj.paginator.num_pages > 1 %}
 <div>
   {% if page_obj.has_previous %}
-    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">« Назад</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.previous_page_number }}"><i class="fas fa-chevron-left"></i></a>
   {% endif %}
 
-  <span>
+  <span class="pagination-info">
     {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
   </span>
 
   {% if page_obj.has_next %}
-    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.next_page_number }}">Вперёд »</a>
+    <a class="btn-main" href="?q={{ q }}&page={{ page_obj.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
   {% endif %}
 </div>
 {% endif %}

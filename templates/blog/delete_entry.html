@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load blog_filters %}
 
 <div class="delete-post-page">
 
@@ -14,31 +15,24 @@
 
 
 
-  <div class="post-card" style="margin-top: 15px; animation: slideInUp 0s forwards;">
-  <div class="post-header">
-    <div class="post-header">
-      {% if object.user.profile.photo %}
-        <img src="{{ object.user.profile.photo.url }}" class="avatar" alt="{{ object.user.profile.fname }} {{ object.user.profile.lname }}">
-      {% else %}
-        <div class="avatar placeholder">{{ object.user.username|slice:":1"|upper }}</div>
-      {% endif %}
-
-      <div class="author-info">
-        <a href="{% url 'profiles-detail' object.user.profile.id %}">
-          {{ object.user.profile.fname }} {{ object.user.profile.lname }}
-        </a>
-        <span class="post-date">{{ object.created_at|date:'d.m.Y H:i' }}</span>
-      </div>
-</div>
-    </div>
-    <div class="post-content">
-      <p>{{ object.content }}</p>
-    {% if object.image %}
-    <div class="detail-post-image">
-        <img src="{{ object.image.url }}" alt="Изображение записи">
-    </div>
-    {% endif %}
-</div>
+  <div class="post-card" style="margin-top: 15px;">
+    <user-post
+      post-id="{{ object.id }}"
+      author-name="{{ object.user.profile.fname }} {{ object.user.profile.lname }}"
+      author-url="{% if object.user == user %}/my_prof/{% else %}{% url 'profiles-detail' object.user.profile.id %}{% endif %}"
+      author-photo="{% if object.user.profile.photo %}{{ object.user.profile.photo.url }}{% endif %}"
+      author-initial="{{ object.user.username|slice:":1"|upper }}"
+      created-at="{{ object.created_at|date:'d.m.Y H:i' }}"
+      content="{{ object.content|truncatewords:30 }}"
+      post-url="{% url 'blog-detail' object.id %}"
+      post-image="{% if object.image %}{{ object.image.url }}{% endif %}"
+      likes-count="{{ object.likes_count }}"
+      is-liked="{% if object|is_liked_by:user %}true{% else %}false{% endif %}"
+      comments-count="{{ object.comments.count }}"
+      csrf-token="{{ csrf_token }}"
+      action-url="{% url 'blog' %}"
+    ></user-post>
+ 
 </div>
 </div>
 

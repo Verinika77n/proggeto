@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="{% static 'styles.css' %}">
 
   <script src="{% static 'js/main.js' %}" defer></script>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
@@ -17,30 +17,30 @@
 <header class="topbar">
   <nav class="nav-wrapper">
     <a class="logo" href="/blog/">AMICI</a>
-    <ul>
+    <ul style="display: flex;">
       
-    <a class="menu-link{% if request.path == '/blog/' %}-active{% endif %}" href="/blog/">Главная</a>
+    <a class="menu-link{% if request.path == '/blog/' %}-active{% endif %}" href="/blog/"> <i class="fas fa-home"></i> <span>Главная</span></a>
     
-    <a class="menu-link{% if request.path == '/my_prof/' %}-active{% endif %}" href="/my_prof/">Мой профиль</a>
+    <a class="menu-link{% if request.path == '/my_prof/' %}-active{% endif %}" href="/my_prof/"><i class="fas fa-user"></i> <span>Мой профиль</span></a>
     
     {% url 'profiles' as profiles_url %}
-    <a class="menu-link{% if request.path == profiles_url %}-active{% endif %}" href="{{ profiles_url }}">Профили</a>
+    <a class="menu-link{% if request.path == profiles_url %}-active{% endif %}" href="{{ profiles_url }}"><i class="fas fa-newspaper"></i> <span>Профили</span></a>
     
-    <a class="menu-link{% if request.path == '/about/' %}-active{% endif %}" href="/about/">О проекте</a>
+    <a class="menu-link{% if request.path == '/about/' %}-active{% endif %}" href="/about/"><i class="fas fa-info-circle"></i> <span>О проекте</span></a>
 </ul>
     {% if user.is_authenticated %}
       <div>
         <form action="{% url 'logout' %}" method="post">
           {% csrf_token %}
           <button class="logout-btn" type="submit" >
-            Выйти
+           <i class="fas fa-sign-out-alt"></i> <span>Выйти</span>
           </button>
         </form>
       </div>
     {% else %}
-      <div class="auth-links">
-        <a class="menu-link" href="{% url 'login' %}">Войти</a>
-        <a class="menu-link" href="{% url 'signup' %}">Регистрация</a>
+      <div class="nav-wrapper">
+        <a class="menu-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> <span>Войти</span></a>
+        <a class="menu-link" href="{% url 'signup' %}"><i class="fas fa-user-plus"></i> <span>Регистрация</span></a>
       </div>
     {% endif %}
   </nav>
@@ -64,5 +64,20 @@
 
 </div>
 {% block scripts %}{% endblock %}
+
+<script>
+    
+    window.addEventListener("beforeunload", function () {
+        localStorage.setItem("scrollY", window.scrollY);
+    });
+
+    
+    window.addEventListener("load", function () {
+        const scrollY = localStorage.getItem("scrollY");
+        if (scrollY !== null) {
+            window.scrollTo(0, parseInt(scrollY));
+        }
+    });
+</script>
 </body>
 </html>

@@ -140,6 +140,10 @@ class UserPost extends HTMLElement {
     margin-bottom: 2px;
   }
 
+  .author-info a:hover {
+    text-decoration: underline;
+  }
+
   .post-date { 
     font-size: 12px; 
     color: #999; 
@@ -235,7 +239,7 @@ class UserPost extends HTMLElement {
   ${data.postImage ? `<div class="post-image"><img src="${data.postImage}"></div>` : ''}
 
   <div class="post-footer-actions">
-    <form method="post" action="${data.actionUrl}">
+    <form method="post" action="${data.actionUrl}" >
       <input type="hidden" name="csrfmiddlewaretoken" value="${data.csrfToken}">
       <input type="hidden" name="e_id" value="${data.id}">
       <button type="submit" class="like-btn">

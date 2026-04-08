@@ -72,7 +72,7 @@
         </form>
       </div>
     {% else %}
-      <p class="page-title">Чтобы оставить комментарий, пожалуйста, <a class="vhod-v-sistemy" href="{% url 'login' %}">войдите в систему</a></p>
+      <p class="page-title" style=" text-align: left;">Чтобы оставить комментарий, пожалуйста,<a class="vhod-v-sistemy" href="{% url 'login' %}">войдите в систему</a></p>
     {% endif %}
 
     {% for comment in entry.comments %}
