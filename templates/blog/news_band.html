@@ -2,6 +2,7 @@
 {% load blog_filters %}
 {% block content %}
 
+<div>
 <h1 class="page-title">Новостная лента</h1>
 
 {% if page_obj.paginator.num_pages > 1 %}
@@ -79,5 +80,5 @@
   {% endif %}
 </div>
 {% endif %}
-
+</div>
 {% endblock %}

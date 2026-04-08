@@ -3,7 +3,7 @@
 {% load blog_filters %}
 
 
-<div class="profile-details-page">
+<div>
 
   <div class="back-link" style="margin-bottom: 10px;">
     <a href="{{ request.META.HTTP_REFERER }}"  class="secondary-btn">←Назад</a>
@@ -16,7 +16,7 @@
       <img src="{{ entry.photo.url }}" class="avatar" style="min-height: 190px; min-width: 190px;" alt="{{ entry.fname }} {{ entry.lname }}">
       {% else %}
       <div class="avatar placeholder" style="min-height: 190px; min-width: 190px; font-size:48px">
-        <span>{{ entry.user.username|slice:":1"|upper }}</span>
+        <span>{{ entry.fname|slice:":1"|upper }}</span>
       </div>
       {% endif %}
     </div>

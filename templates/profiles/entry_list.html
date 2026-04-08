@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="profiles-page">
+
 
   {% if user.is_authenticated and user.profile %}
     <h1 class="page-title">Профили</h1>
@@ -25,7 +25,7 @@
     </form>
 
   
-    <div class="profiles-list">
+    <div class="post-card">
   {% for e in page_obj %}
     <profile-card 
       fname="{{ e.fname }}" 
@@ -48,6 +48,5 @@
     </div>
   {% endif %}
 
-</div>
 
 {% endblock %}

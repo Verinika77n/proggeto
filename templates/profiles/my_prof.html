@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load blog_filters %}
-
+<div>
 <div class="back-link" style="margin-bottom: 10px;">
-    <a href="{{ request.META.HTTP_REFERER }}" class="secondary-btn">← Назад</a>
+    <a href="{{ request.META.HTTP_REFERER }}"  class="secondary-btn">←Назад</a>
   </div>
 <div class="profile-card">
 
@@ -100,5 +100,5 @@
     {% endif %}
   {% endif %}
 
-
+</div>
 {% endblock %}

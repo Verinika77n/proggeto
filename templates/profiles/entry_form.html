@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="profile-form-page">
+<div class="post-card">
   <h1 class="page-title">{% if object %}Изменить{% else %}Добавить{% endif %} данные</h1>
 
-  <form method="post" class="profile-form" enctype="multipart/form-data">
+  <form method="post" class="form-group" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
 
@@ -58,14 +58,14 @@
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn-save">Сохранить</button>
+      <button type="submit" class="success-btn">Сохранить</button>
 
       {% if object %}
         {% if user.is_authenticated %}
           {% if object.user == user or user.is_staff %}
-            <a href="/my_prof/" class="btn-cancel">Отмена</a>
+            <a href="/my_prof/" class="secondary-btn">Отмена</a>
           {% else %}
-            <a href="{% if object %}/my_prof/{% else %}{% url 'profiles' %}{% endif %}" class="btn-cancel">Отмена</a>
+            <a href="{% if object %}/my_prof/{% else %}{% url 'profiles' %}{% endif %}" class="secondary-btn">Отмена</a>
           {% endif %}
         {% endif %}
       {% endif %}
