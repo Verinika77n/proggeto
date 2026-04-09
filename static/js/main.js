@@ -184,8 +184,8 @@ class UserPost extends HTMLElement {
     border-top: 1px solid #f0f0f0; 
     padding-top: 15px; 
   }
-
  
+  
   .like-btn { 
     background: #f8f9fa; 
     border: 1px solid #eee; 
