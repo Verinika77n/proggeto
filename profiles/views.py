@@ -56,7 +56,7 @@ class EntryCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, 'Данные обновлены')
-        return reverse('profiles-detail', args=[self.object.pk])
+        return reverse('my_prof')
     
     
 

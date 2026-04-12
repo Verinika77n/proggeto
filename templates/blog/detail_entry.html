@@ -7,58 +7,36 @@
   
   <div class="back-link" >
     <a href="/blog/#{{ entry.id }}" class="secondary-btn" style="margin-bottom: 15px;">← Назад</a>
-  </div>
-
-  <div class="post-card" style="animation: slideInUp 0s forwards">
-  <div class="post-header">
-    <div class="post-header">
-      {% if entry.user.profile.photo %}
-        <img src="{{ entry.user.profile.photo.url }}" class="avatar" alt="{{ entry.user.profile.fname }} {{ entry.user.profile.lname }}">
-      {% else %}
-        <div class="avatar placeholder">{{ entry.user.username|slice:":1"|upper }}</div>
-      {% endif %}
-
-      <div class="author-info">
-        <a href="{% url 'profiles-detail' entry.user.profile.id %}">
-          {{ entry.user.profile.fname }} {{ entry.user.profile.lname }}
-        </a>
-        <span class="post-date">{{ entry.created_at|date:'d.m.Y H:i' }}</span>
-      </div>
-</div>
-    {% if user.is_authenticated %}
+      {% if user.is_authenticated %}
       {% if entry.user == user or user.is_staff %}
-      <div>
+    
         <a href="{% url 'blog-edit' entry.id %}" class="primary-btn">Изменить</a>
         <a href="{% url 'blog-delete' entry.id %}" class="danger-btn">Удалить</a>
-      </div>
+      
       {% endif %}
     {% endif %}
+  
+  </div>
 
-    </div>
-
-    <div class="post-content">
-      <p>{{ entry.content }}</p>
-
- 
-    {% if entry.image %}
-    <div class="post-image">
-        <img src="{{ entry.image.url }}" alt="Изображение записи">
-    </div>
-    {% endif %}
-
-    <div >
-        <form method="post" action="{% url 'blog-detail' entry.id %}">
-            {% csrf_token %}
-            <input type="hidden" name="e_id" value="{{ entry.id }}">
-            <button type="submit" name="form_type" value="form1" class="like-btn">
-                <span class="heart">{% if entry|is_liked_by:user %}❤️{% else %}🤍{% endif %}</span>
-                <span class="count">{{ entry.likes_count }}</span>
-            </button>
-        </form>
-    </div>
+ <div class="post-card" style="margin-top: 15px;">
+  
+    <user-post
+      post-id="{{ entry.id }}"
+      author-name="{{ entry.user.profile.fname }} {{ entry.user.profile.lname }}"
+      author-url="{% if entry.user == user %}/my_prof/{% else %}{% url 'profiles-detail' entry.user.profile.id %}{% endif %}"
+      author-photo="{% if entry.user.profile.photo %}{{ entry.user.profile.photo.url }}{% endif %}"
+      author-initial="{{ entry.user.username|slice:":1"|upper }}"
+      created-at="{{ entry.created_at|date:'d.m.Y H:i' }}"
+      content="{{ entry.content|truncatewords:30 }}"
+      post-url="{% url 'blog-detail' entry.id %}"
+      post-image="{% if entry.image %}{{ entry.image.url }}{% endif %}"
+      likes-count="{{ entry.likes_count }}"
+      is-liked="{% if entry|is_liked_by:user %}true{% else %}false{% endif %}"
+      comments-count="{{ entry.comments.count }}"
+      csrf-token="{{ csrf_token }}"
+      action-url="{% url 'blog' %}"
+    ></user-post>
 </div>
-    </div>
-  </article>
  <h3 class="page-title">Комментарии</h3>
   <section id="comments-section" class="comment-card">
 
