@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BlogEntry, BlogActivity
+from .models import BlogEntry, BlogActivity, Notification
 
 @admin.register(BlogEntry)
 class BlogEntryAdmin(admin.ModelAdmin):
@@ -13,4 +13,8 @@ class BlogActivityAdmin(admin.ModelAdmin):
     search_fields = ('blog_entry__id', 'user__username', 'comment')
     ordering = ['-timestamp']
     
-
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'recipient', 'actor', 'verb', 'post', 'is_read', 'created_at')
+    search_fields = ('recipient__username', 'actor__username', 'verb')
+    ordering = ['-created_at']

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}AMICI{% endblock %}</title>
-
+  <link rel="icon" type="image/png" href="{% static 'images/i.png' %}">
   <link rel="stylesheet" href="{% static 'styles.css' %}">
 
   <script src="{% static 'js/main.js' %}" defer></script>
@@ -27,7 +27,35 @@
     <a class="menu-link{% if request.path == profiles_url %}-active{% endif %}" href="{{ profiles_url }}"><i class="fas fa-newspaper"></i> <span>Профили</span></a>
     
     <a class="menu-link{% if request.path == '/about/' %}-active{% endif %}" href="/about/"><i class="fas fa-info-circle"></i> <span>О проекте</span></a>
-</ul>
+     {% if user.is_authenticated %}
+    <div class="notification-container" >
+      <div id="notification-bell" class="bell-wrapper {% if unread_notifications_count > 0 %}has-notifications{% endif %}">
+        <span class="bell-icon">🔔</span>
+        {% if unread_notifications_count > 0 %}
+        <span class="notification-badge">{{ unread_notifications_count }}</span>
+        {% endif %}
+      </div>
+   
+      <div id="notification-dropdown" class="notification-feed">
+        <div class="feed-header">Уведомления</div>
+        <div class="feed-content">
+          {% for n in last_notifications %}
+          <div class="notification-item {% if not n.is_read %}unread-style{% endif %}">
+            <a href="{% url 'blog-detail' n.post.id %}">
+              <strong>{{ n.actor.username }}</strong> {{ n.verb }}
+            </a>
+          </div>
+
+          {% empty %}
+            <div class="notification-item">
+              Уведомлений нет     
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+{% endif %}
+  </ul>
     {% if user.is_authenticated %}
       <div>
         <form action="{% url 'logout' %}" method="post">

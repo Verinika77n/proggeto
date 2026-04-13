@@ -10,7 +10,8 @@ from django.db.models import Q
 from .forms import BlogEntryForm
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404
-
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 class SearchMixin:
     def get_queryset(self):
@@ -117,7 +118,8 @@ class BlogDetailView(DetailView):
                     action='comment',
                     comment=comment_text
                 )
-                messages.success(request, 'Комментарий добавлен.')
+               
+                
             else:
                 messages.error(request, 'Комментарий не может быть пустым.')
         elif form_type == "delete_comment": 
@@ -159,3 +161,16 @@ class BlogDeleteView(LoginRequiredMixin, OwnerOrStaffRequired, DeleteView):
         messages.success(self.request, 'Запись удалена')
         return super().delete(request, *args, **kwargs)
 
+from .models import Notification
+
+@csrf_exempt
+def mark_notifications_as_read(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+      
+        count = Notification.objects.filter(recipient=request.user, is_read=False).count()
+        print(f"Найдено {count} непрочитанных уведомлений. Обновляем...")
+        
+        Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+        
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)

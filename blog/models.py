@@ -46,3 +46,27 @@ class BlogActivity(models.Model):
         return f"{self.user.username} {self.action} on {self.blog_entry.id}"
     
   
+
+from django.contrib.auth.models import User
+
+class Notification(models.Model):
+
+    TYPE_CHOICES = (
+        ('like', 'Лайк'),
+        ('comment', 'Комментарий'),
+    )
+
+    recipient = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='notifications', verbose_name="Получатель")
+    actor = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name="Отправитель")
+    verb = models.CharField(max_length=255, verbose_name="Действие") 
+
+    post = models.ForeignKey('BlogEntry', on_delete=models.CASCADE, null=True, blank=True, verbose_name="Пост")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.actor} {self.verb} {self.recipient}"

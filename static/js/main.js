@@ -266,4 +266,48 @@ customElements.define('user-post', UserPost);
 customElements.define('profile-card', ProfileCard);
 
 
- 
+document.addEventListener('DOMContentLoaded', function() {
+    const bell = document.getElementById('notification-bell');
+    const dropdown = document.getElementById('notification-dropdown');
+    const bellicon = bell.querySelector('.bell-icon');
+
+    if (bell && dropdown) {
+        
+        bell.addEventListener('click', function(e) {
+            e.stopPropagation(); 
+            
+           
+            dropdown.classList.toggle('show');
+            bellicon.classList.toggle('active');
+
+
+            
+            const badge = document.querySelector('.notification-badge');
+            if (dropdown.classList.contains('show') && badge) {
+                
+                
+                badge.style.display = 'none';
+                bell.classList.remove('has-notifications');
+
+                
+                fetch('/blog/mark-notifications-read/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => console.log("Уведомления прочитаны:", data))
+                .catch(error => console.error("Ошибка при чтении:", error));
+            }
+        });
+
+        
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    }
+});
