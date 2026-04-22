@@ -194,6 +194,10 @@ background-color: #39106b;
 
 }
 
+ .comment-avtor:hover {
+    text-decoration: underline;
+  }
+
 /* ============================================================
    6. АВАТАРЫ
    ============================================================ */
@@ -204,6 +208,7 @@ background-color: #39106b;
     object-fit: cover;
     background: #eee;
     flex-shrink: 0;
+    transition: scale 0.3s;
 }
 
 .avatar.placeholder {
@@ -215,6 +220,12 @@ background-color: #39106b;
     font-weight: bold;
     font-size: 24px;
 }
+
+.avatar:hover {
+    scale: 1.05;
+    transition: scale 0.3s;
+}
+
 
 /* ============================================================
    7. КНОПКИ И УПРАВЛЕНИЕ (UI-KIT)
@@ -531,3 +542,11 @@ input:focus, textarea:focus {
     }
 
 }
+
+
+.gallery {
+  display: flex;
+  justify-content: center; /* Центр по горизонтали */
+  
+}
+

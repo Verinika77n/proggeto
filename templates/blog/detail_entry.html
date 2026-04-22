@@ -65,7 +65,7 @@
           <div class="avatar placeholder" style="max-width: 30px; max-height: 30px; font-size: 12px;">{{ comment.user.username|slice:":1"|upper }}</div>
         {% endif %}
 
-          <a href="{% url 'profiles-detail' comment.user.profile.id %}" style="font-size: 14px;">
+          <a href="{% url 'profiles-detail' comment.user.profile.id %}" class="comment-avtor" style="font-size: 14px;"> 
             {{ comment.user.profile.fname }} {{ comment.user.profile.lname }}
           </a>
           <span class="comment-date">{{ comment.timestamp|date:'d.m.Y H:i' }}</span>
