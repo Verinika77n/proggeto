@@ -426,22 +426,3 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('post-modal');
-  if (!modal) return;
-
-  document.getElementById('modal-close').addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-  });
-});
-
-function closeModal() {
-  document.getElementById('post-modal').style.display = 'none';
-  document.body.style.overflow = '';
-}
- 

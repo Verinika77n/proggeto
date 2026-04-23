@@ -27,27 +27,22 @@
 
   
     <div class="post-card">
-  {% for e in page_obj %}
-    <profile-card 
-      fname="{{ e.fname }}" 
-      lname="{{ e.lname }}" 
-      photo="{% if e.photo %}{{ e.photo.url }}{% endif %}"
-      about="{{ e.about|default:'' }}"
-      date="{{ e.created_at|date:'d.m.Y' }}"
-      url="{% if e.user == user %}/my_prof/{% else %}{% url 'profiles-detail' e.id %}{% endif %}"
-    ></profile-card>
-  {% empty %}
-    <p>Нет информации</p>
-  {% endfor %}
-</div>
-
-  {% else %}
+      {% for e in page_obj %}
+      <profile-card fname="{{ e.fname }}" lname="{{ e.lname }}" photo="{% if e.photo %}{{ e.photo.url }}{% endif %}"
+        about="{{ e.about|default:'' }}" date="{{ e.created_at|date:'d.m.Y' }}"
+        url="{% if e.user == user %}/my_prof/{% else %}{% url 'profiles-detail' e.id %}{% endif %}"></profile-card>
+      {% empty %}
+      <p>Нет информации</p>
+      {% endfor %}
+    </div>
+    
+    {% else %}
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
       <p style="margin: 5px;">Вы не можете просматривать профили, так как не заполнили свой профиль. </p>
       <p style="margin: 5px;">Пожалуйста, заполните свой профиль, чтобы получить доступ к другим профилям.</p>
       <a href="{% url 'profiles-create' %}" class="vhod-v-sistemy">Создать профиль</a>
     </div>
-  {% endif %}
-
-</div>
+    {% endif %}
+    
+    </div>
 {% endblock %}
