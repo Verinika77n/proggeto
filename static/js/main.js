@@ -224,7 +224,7 @@ class UserPost extends HTMLElement {
   <div class="post-header">
     ${data.authorPhoto 
       ? `<img src="${data.authorPhoto}" class="avatar" alt="${data.authorName}">`
-      : `<div class="placeholder">${data.authorInitial}</div>`
+      : `<div class="placeholder">${data.authorInitial.charAt(0).toUpperCase()}</div>`
     }
     <div class="author-info">
       <a href="${data.authorUrl}">${data.authorName}</a>
@@ -236,7 +236,11 @@ class UserPost extends HTMLElement {
     <a href="${data.postUrl}">${data.content}</a>
   </div>
 
-  ${data.postImage ? `<div class="post-image"><img src="${data.postImage}"></div>` : ''}
+  ${data.postImage 
+  ? `<div class="post-image">
+       <img src="${data.postImage}" class="clickable-image" style="cursor:pointer;">
+     </div>` 
+  : ''}
 
   <div class="post-footer-actions">
     <form method="post" action="${data.actionUrl}" >
@@ -254,7 +258,12 @@ class UserPost extends HTMLElement {
   </div>
 </article>
 `;
-
+const img = this.shadowRoot.querySelector('.clickable-image');
+if (img) {
+  img.addEventListener('click', () => {
+    openPostModal(data.id, data.postUrl);
+  });
+}
    
 
   }
@@ -265,5 +274,174 @@ customElements.define('user-post', UserPost);
 
 customElements.define('profile-card', ProfileCard);
 
+let _modalPostId = null;
+let _modalIsLiked = false;
 
+const IS_AUTHENTICATED = document.body.dataset.authenticated === 'true';
+const CSRF_TOKEN = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+async function openPostModal(postId, postUrl, csrfToken) {
+  _modalPostId = postId;
+
+  const resp = await fetch(`/blog/${postId}/modal/`);
+  const d = await resp.json();
+
+ 
+  const modalLeft = document.querySelector('.modal-left');
+  const modalImg = document.getElementById('modal-img');
+  if (d.image) {
+    modalImg.src = d.image;
+    modalLeft.style.display = 'flex';
+    const saveBtn = document.getElementById('modal-save-btn');
+    saveBtn.href = d.image;
+    saveBtn.download = d.image.split('/').pop(); 
+  } else {
+    modalLeft.style.display = 'none';
+  }
+
+  
+  document.getElementById('modal-author').textContent = d.author_name;
+  document.getElementById('modal-author').href = d.author_url;
+  document.getElementById('modal-date').textContent = d.created_at;
+  document.getElementById('modal-content').textContent = d.content;
+  document.getElementById('modal-full-link').href = postUrl;
+
+  
+  _modalIsLiked = d.is_liked; 
+  updateLikeUI(d.likes_count, d.is_liked);
+
+  
+  renderComments(d.comments);
+
+ 
+  const isAuth = document.body.dataset.authenticated === 'true';
+  document.getElementById('modal-comment-form').style.display = isAuth ? 'flex' : 'none';
+  document.getElementById('modal-login-hint').style.display = isAuth ? 'none' : 'block';
+
+  
+  document.getElementById('post-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function updateLikeUI(count, isLiked) {
+  _modalIsLiked = isLiked;
+  document.getElementById('modal-likes-count').textContent = count;
+  document.getElementById('modal-like-icon').textContent = isLiked ? '❤️' : '🤍';
+  const btn = document.getElementById('modal-like-btn');
+  btn.classList.toggle('liked', isLiked);
+}
+
+function renderComments(comments) {
+  const list = document.getElementById('modal-comments-list');
+  if (!comments.length) {
+    list.innerHTML = '<p class="no-comments">Комментариев пока нет</p>';
+    return;
+  }
+  list.innerHTML = comments.map(c => `
+    <div class="modal-comment">
+      <a href="/blog${c.author_url}">${c.author}</a>
+      <span>${c.text}</span>
+    </div>
+  `).join('');
+ 
+  list.scrollTop = list.scrollHeight;
+}
+
+function closeModal() {
+  document.getElementById('post-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('modal-comment-input').value = '';
+  document.getElementById('modal-comment-error').textContent = '';
+  _modalPostId = null;
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('post-modal');
+  if (!modal) return;
+
+  
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  
+  document.getElementById('modal-like-btn').addEventListener('click', async () => {
+    if (!_modalPostId) return;
+    if (document.body.dataset.authenticated !== 'true') {
+      window.location.href = '/accounts/login/';
+      return;
+    }
+    const resp = await fetch(`/blog/${_modalPostId}/modal/like/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRF_TOKEN }
+    });
+    const d = await resp.json();
+    updateLikeUI(d.likes_count, d.liked);
+  });
+
+  
+  document.getElementById('modal-comment-submit').addEventListener('click', async () => {
+    const input = document.getElementById('modal-comment-input');
+    const error = document.getElementById('modal-comment-error');
+    const btn = document.getElementById('modal-comment-submit');
+    const text = input.value.trim();
+
+    if (!text) {
+      error.textContent = 'Введите текст комментария';
+      return;
+    }
+
+    btn.disabled = true;
+    error.textContent = '';
+
+    const formData = new FormData();
+    formData.append('comment_text', text);
+
+    const resp = await fetch(`/blog/${_modalPostId}/modal/comment/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRF_TOKEN },
+      body: formData
+    });
+
+    if (resp.ok) {
+      const newComment = await resp.json();
+      
+      const list = document.getElementById('modal-comments-list');
+      const noComments = list.querySelector('.no-comments');
+      if (noComments) noComments.remove();
+
+      const div = document.createElement('div');
+      div.className = 'modal-comment';
+      div.innerHTML = `<a href="/blog${newComment.author_url}">${newComment.author}</a><span>${newComment.text}</span>`;
+      list.appendChild(div);
+      list.scrollTop = list.scrollHeight;
+      input.value = '';
+    } else {
+      const d = await resp.json();
+      error.textContent = d.error || 'Ошибка при отправке';
+    }
+
+    btn.disabled = false;
+  });
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('post-modal');
+  if (!modal) return;
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+});
+
+function closeModal() {
+  document.getElementById('post-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
  

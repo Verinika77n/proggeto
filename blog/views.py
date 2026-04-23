@@ -159,3 +159,80 @@ class BlogDeleteView(LoginRequiredMixin, OwnerOrStaffRequired, DeleteView):
         messages.success(self.request, 'Запись удалена')
         return super().delete(request, *args, **kwargs)
 
+from django.http import JsonResponse
+
+def post_modal_data(request, pk):
+    entry = get_object_or_404(BlogEntry, pk=pk)
+    comments = BlogActivity.objects.filter(
+        blog_entry=entry, action='comment'
+    ).select_related('user__profile').order_by('timestamp')
+    is_liked = False
+    if request.user.is_authenticated:
+        is_liked = BlogActivity.objects.filter(
+            blog_entry=entry, user=request.user, action='like'
+        ).exists()
+
+    return JsonResponse({
+        'image': entry.image.url if entry.image else None,
+        'content': entry.content,
+        'author_name': f"{entry.user.profile.fname} {entry.user.profile.lname}",
+        'author_url': '/my_prof/' if entry.user == request.user else f'/blog/profiles/{entry.user.profile.id}/',
+        'created_at': entry.created_at.strftime('%d.%m.%Y %H:%M'),
+        'likes_count': entry.likes_count(),
+        'post_url': f'/{entry.pk}/',
+        'comments': [
+            {
+                'author': f"{c.user.profile.fname} {c.user.profile.lname}",
+                'text': c.comment,
+                'author_url': f'/profiles/{c.user.profile.id}/',
+            }
+            for c in comments
+        ],
+        'is_liked': is_liked,
+    })
+
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+
+@login_required
+@require_POST
+def modal_like(request, pk):
+    entry = get_object_or_404(BlogEntry, pk=pk)
+    activity, created = BlogActivity.objects.get_or_create(
+        blog_entry=entry,
+        user=request.user,
+        action='like'
+    )
+    if not created:
+        activity.delete()
+        liked = False
+    else:
+        liked = True
+
+    return JsonResponse({
+        'liked': liked,
+        'likes_count': BlogActivity.objects.filter(blog_entry=entry, action='like').count()
+    })
+
+
+@login_required
+@require_POST  
+def modal_comment(request, pk):
+    entry = get_object_or_404(BlogEntry, pk=pk)
+    text = request.POST.get('comment_text', '').strip()
+    
+    if not text:
+        return JsonResponse({'error': 'Комментарий не может быть пустым'}, status=400)
+    
+    comment = BlogActivity.objects.create(
+        blog_entry=entry,
+        user=request.user,
+        action='comment',
+        comment=text
+    )
+    
+    return JsonResponse({
+        'author': f"{request.user.profile.fname} {request.user.profile.lname}",
+        'author_url': f'/profiles/{request.user.profile.id}/',
+        'text': text,
+    })
